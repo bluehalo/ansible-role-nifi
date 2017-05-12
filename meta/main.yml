@@ -7,10 +7,10 @@ galaxy_info:
   license: BSD
 
   platforms:
-    - name: CentOS
+    - name: EL
       versions:
-        - 6.5
-        - 7.0
+        - 6
+        - 7
     - name: AmazonLinux
       versions:
         - all
