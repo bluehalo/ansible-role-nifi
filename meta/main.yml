@@ -6,6 +6,15 @@ galaxy_info:
   min_ansible_version: 2.1
   license: BSD
 
+  platforms:
+    - name: CentOS
+      versions:
+        - 6.5
+        - 7.0
+    - name: AmazonLinux
+      versions:
+        - all
+
   galaxy_tags:
     - apache
     - nifi
