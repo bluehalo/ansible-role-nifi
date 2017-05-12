@@ -3,6 +3,8 @@ galaxy_info:
   author: "Asymmetrik"
   description: "This role is used to install and configure Apache NiFi"
 
+  min_ansible_version: 2.1
+  license: BSD
   galaxy_tags: []
 
 dependencies: []
