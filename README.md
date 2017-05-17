@@ -3,10 +3,13 @@ nifi
 
 Use this role to install, configure, and manage Apache NiFi.
 
+Role has been tested with NiFi versions 1.1.x and 1.2.0.
+
 Requirements
 ------------
 
-- NiFi distribution must be accssible on the target system prior to executing this role
+Prior to executing this role, the NiFi distribution must be accssible on the target system at
+```{{ nifi_base_dir }}/nifi-{{ nifi_version }}/```
   - if RPM, the RPM must be installed
   - if tar.gz, it must be unarchived
 
@@ -129,17 +132,27 @@ Example Playbook
 
 Install and configure NiFi
 
-    - name: Install nifi
+    - name: Install NiFi
       hosts: servers
       vars: 
           nifi_log_level_root: WARN
           nifi_node_jvm_memory: '10240M'
-          nifi_custom_nars: [ '/usr/lib/extra-nars' ]
+          nifi_custom_nars: [ '/opt/extra-nars' ]
           nifi_single_node: False
           nifi_nodes_list: ['nifi-node-1', 'nifi-node-2']      
+      pre_tasks:
+        - name: Upload NiFi distribution (tar.gz) from localhost
+          copy:
+            src: nifi-1.2.0-bin.tar.gz
+            dest: /opt/nifi
+        - name: Unarchive NiFi distribution
+          unarchive:
+            src: /opt/nifi/nifi-1.2.0-bin.tar.gz
+            dest: /opt/nifi
+            copy: no
       roles:
-        - role: nifi
-          nifi_rpm_file: "/opt/nifi/nifi-assembly-{{ nifi_version }}.rpm"
+        - role: asymmetrik.nifi
+          nifi_version: 1.2.0
 
 License
 -------
