@@ -30,3 +30,7 @@
 
 - name: Ensure NiFi is running
   service: name=nifi state=started enabled=yes
+
+- name: Ensure NiFi is restarted
+  service: name=nifi state=restarted
+  when: nifi_force_restart
