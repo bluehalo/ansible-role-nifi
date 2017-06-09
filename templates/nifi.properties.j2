@@ -202,6 +202,7 @@ nifi.cluster.is.node={{ (not nifi_single_node) | lower }}
 nifi.cluster.node.address={{ nifi_input_socket_host }}
 nifi.cluster.node.protocol.port={{ nifi_cluster_node_protocol_port }}
 nifi.cluster.node.protocol.threads=10
+nifi.cluster.node.protocol.max.threads=50
 nifi.cluster.node.event.history.size=25
 nifi.cluster.node.connection.timeout=5 sec
 nifi.cluster.node.read.timeout=5 sec
@@ -234,11 +235,11 @@ nifi.zookeeper.root.node={{ nifi_zookeeper_root_node }}
 # kerberos #
 nifi.kerberos.krb5.file=
 
-# kerberos service principle #
+# kerberos service principal #
 nifi.kerberos.service.principal=
 nifi.kerberos.service.keytab.location=
 
-# kerberos spnego principle #
+# kerberos spnego principal #
 nifi.kerberos.spnego.principal=
 nifi.kerberos.spnego.keytab.location=
 nifi.kerberos.spnego.authentication.expiration=12 hours
