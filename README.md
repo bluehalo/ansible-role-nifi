@@ -3,7 +3,7 @@ nifi
 
 Use this role to install, configure, and manage Apache NiFi.
 
-Role has been tested with NiFi versions 1.1.x and 1.2.0.
+Role has been tested with NiFi versions 1.1.x, 1.2.0 and 1.3.0.
 
 Requirements
 ------------
