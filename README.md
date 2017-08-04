@@ -153,7 +153,7 @@ Install and configure NiFi
             dest: /opt/nifi
             copy: no
       roles:
-        - role: asymmetrik.nifi
+        - role: nifi
           nifi_version: 1.2.0
 
 License
@@ -161,7 +161,3 @@ License
 
 MIT
 
-Author Information
-------------------
-
-[Asymmetrik, Ltd.](https://www.asymmetrik.com/)
