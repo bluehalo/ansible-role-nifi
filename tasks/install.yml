@@ -14,12 +14,6 @@
   notify:
     - reload systemctl
     - restart nifi
-  when: ansible_distribution == "CentOS" and ansible_distribution_major_version >= "7"
-  tags: [ service ]
-
-- name: Create nifi init.d service
-  template: src=nifi-startup.sh.j2 dest=/etc/init.d/nifi owner=root group=root mode=0755
-  when: ansible_distribution == "Amazon" or (ansible_distribution == "CentOS" and ansible_distribution_major_version < "7")
   tags: [ service ]
 
 - name: Ensure nifi-required directories exist and are world-readable

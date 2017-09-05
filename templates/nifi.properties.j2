@@ -147,7 +147,7 @@ nifi.web.https.port=9443
 nifi.web.https.network.interface.default=
 {% else -%}
 nifi.web.http.host={{ nifi_input_socket_host }}
-nifi.web.http.port=8080
+nifi.web.http.port={{ nifi_web_http_port }}
 nifi.web.https.host=
 nifi.web.https.port=
 nifi.web.https.network.interface.default=
