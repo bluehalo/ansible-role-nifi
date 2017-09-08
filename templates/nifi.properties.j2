@@ -113,7 +113,7 @@ nifi.provenance.repository.journal.count=16
 # EventType, FlowFileUUID, Filename, TransitURI, ProcessorID, AlternateIdentifierURI, Relationship, Details
 nifi.provenance.repository.indexed.fields={{ nifi_provenance_indexed_fields }}
 # FlowFile Attributes that should be indexed and made searchable.  Some examples to consider are filename, uuid, mime.type
-nifi.provenance.repository.indexed.attributes=
+nifi.provenance.repository.indexed.attributes={{ nifi_provenance_indexed_attributes }}
 # Large values for the shard size will result in more Java heap usage when searching the Provenance Repository
 # but should provide better performance
 nifi.provenance.repository.index.shard.size=500 MB
