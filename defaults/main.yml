@@ -1,6 +1,6 @@
 ---
 # defaults file for nifi
-nifi_major_version: "{{ nifi_version[0,2] }}"
+nifi_major_version: "{{ nifi_version | splitext | first }}"
 
 # installation locations
 nifi_base_dir: /opt/nifi
