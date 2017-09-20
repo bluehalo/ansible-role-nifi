@@ -1,6 +1,6 @@
 ---
 # defaults file for nifi
-nifi_major_version: "1.4"
+nifi_major_version: "{{ nifi_version[0,2] }}"
 
 # installation locations
 nifi_base_dir: /opt/nifi
