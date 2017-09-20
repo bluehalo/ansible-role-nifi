@@ -2,7 +2,7 @@
 - name: copy nifi configs
   template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
   with_items:
-    - { src: 'nifi.properties.j2', dest: "{{nifi_conf_dir}}/nifi.properties" }
+    - { src: "{{ nifi_major_version }}/nifi.properties.j2", dest: "{{nifi_conf_dir}}/nifi.properties" }
     - { src: 'extra-args.properties.j2', dest: "{{nifi_conf_dir}}/extra-args.properties" }
   notify:
     - restart nifi
@@ -11,13 +11,13 @@
 - name: copy nifi configs
   template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
   with_items:
-    - { src: 'authorizers.xml.j2', dest: "{{nifi_conf_dir}}/authorizers.xml" }
-    - { src: 'bootstrap.conf.j2', dest: "{{nifi_conf_dir}}/bootstrap.conf" }
-    - { src: 'bootstrap-notification-services.xml.j2', dest: "{{nifi_conf_dir}}/bootstrap-notification-services.xml" }
-    - { src: 'logback.xml.j2', dest: "{{nifi_conf_dir}}/logback.xml" }
-    - { src: 'login-identity-providers.xml.j2', dest: "{{nifi_conf_dir}}/login-identity-providers.xml" }
-    - { src: 'state-management.xml.j2', dest: "{{nifi_conf_dir}}/state-management.xml" }
-    - { src: 'zookeeper.properties.j2', dest: "{{nifi_conf_dir}}/zookeeper.properties" }
+    - { src: "{{ nifi_major_version }}/authorizers.xml.j2", dest: "{{nifi_conf_dir}}/authorizers.xml" }
+    - { src: "{{ nifi_major_version }}/bootstrap.conf.j2", dest: "{{nifi_conf_dir}}/bootstrap.conf" }
+    - { src: "{{ nifi_major_version }}/bootstrap-notification-services.xml.j2", dest: "{{nifi_conf_dir}}/bootstrap-notification-services.xml" }
+    - { src: "{{ nifi_major_version }}/logback.xml.j2", dest: "{{nifi_conf_dir}}/logback.xml" }
+    - { src: "{{ nifi_major_version }}/login-identity-providers.xml.j2", dest: "{{nifi_conf_dir}}/login-identity-providers.xml" }
+    - { src: "{{ nifi_major_version }}/state-management.xml.j2", dest: "{{nifi_conf_dir}}/state-management.xml" }
+    - { src: "{{ nifi_major_version }}/zookeeper.properties.j2", dest: "{{nifi_conf_dir}}/zookeeper.properties" }
   notify:
     - restart nifi
   tags: [ config ]
@@ -25,8 +25,8 @@
 - name: copy nifi scripts
   template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0755'
   with_items:
-    - { src: 'nifi.sh.j2', dest: "{{ nifi_home }}/bin/nifi.sh" }
-    - { src: 'nifi-env.sh.j2', dest: "{{ nifi_home }}/bin/nifi-env.sh" }
+    - { src: "{{ nifi_major_version }}/nifi.sh.j2", dest: "{{ nifi_home }}/bin/nifi.sh" }
+    - { src: "{{ nifi_major_version }}/nifi-env.sh.j2", dest: "{{ nifi_home }}/bin/nifi-env.sh" }
 
 - name: Ensure NiFi is running
   service: name=nifi state=started enabled=yes
