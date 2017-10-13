@@ -143,7 +143,7 @@ nifi.web.http.host=
 nifi.web.http.port=
 nifi.web.http.network.interface.default=
 nifi.web.https.host={{ nifi_input_socket_host }}
-nifi.web.https.port=9443
+nifi.web.https.port={{ nifi_web_https_port }}
 nifi.web.https.network.interface.default=
 {% else -%}
 nifi.web.http.host={{ nifi_input_socket_host }}
@@ -163,13 +163,13 @@ nifi.sensitive.props.provider=BC
 nifi.sensitive.props.additional.keys=
 
 {% if nifi_is_secure -%}
-nifi.security.keystore={{ nifi_conf_dir }}/keystore.jks
-nifi.security.keystoreType=jks
-nifi.security.keystorePasswd=wildfire
-nifi.security.keyPasswd=wildfire
-nifi.security.truststore={{ nifi_conf_dir }}/truststore.jks
-nifi.security.truststoreType=jks
-nifi.security.truststorePasswd=wildfire
+nifi.security.keystore={{ nifi_security_keystore }}
+nifi.security.keystoreType={{ nifi_security_keystoreType }}
+nifi.security.keystorePasswd={{ nifi_security_keystorePasswd }}
+nifi.security.keyPasswd={{ nifi_security_keyPasswd }}
+nifi.security.truststore={{ nifi_security_truststore }}
+nifi.security.truststoreType={{ nifi_security_truststoreType }}
+nifi.security.truststorePasswd={{ nifi_security_truststorePasswd }}
 {% else -%}
 nifi.security.keystore=
 nifi.security.keystoreType=

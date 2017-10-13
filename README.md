@@ -100,6 +100,13 @@ Role Variables
     # Security settings
     nifi_initial_admin:
     nifi_is_secure: False
+    nifi_web_https_port: 8443
+    nifi_security_keystore: "{{ nifi_conf_dir }}/keystore.jks"
+    nifi_security_keystoreType: jks
+    nifi_security_keystorePasswd: ''
+    nifi_security_truststore: "{{ nifi_conf_dir }}/truststore.jks"
+    nifi_security_truststoreType: jks
+    nifi_security_truststorePasswd: ''
 
     # Logback logging levels and settings
     nifi_log_app_file_retention: 10
