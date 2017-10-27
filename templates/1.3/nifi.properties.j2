@@ -133,7 +133,7 @@ nifi.components.status.snapshot.frequency={{ nifi_components_status_snapshot_fre
 nifi.remote.input.host={{ nifi_input_socket_host }}
 nifi.remote.input.secure={{ nifi_is_secure | lower }}
 nifi.remote.input.socket.port={{ nifi_input_socket_port }}
-nifi.remote.input.http.enabled={{ not nifi_is_secure | lower }}
+nifi.remote.input.http.enabled={{ (not nifi_is_secure) | lower }}
 nifi.remote.input.http.transaction.ttl=30 sec
 
 # web properties #
