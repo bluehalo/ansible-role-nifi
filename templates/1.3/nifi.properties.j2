@@ -51,7 +51,7 @@ nifi.state.management.provider.local=local-provider
 # The ID of the cluster-wide state provider. This will be ignored if NiFi is not clustered but must be populated if running in a cluster.
 nifi.state.management.provider.cluster=zk-provider
 # Specifies whether or not this instance of NiFi should run an embedded ZooKeeper server
-{% set is_zk_node = nifi_nodes_list[0:3] | intersect([ec2_private_ip_address]) | length > 0 -%}
+{% set is_zk_node = nifi_zookeeper_servers | intersect([ec2_private_ip_address]) | length > 0 -%}
 {% set should_run_zk = nifi_state_management_embedded_zookeeper_start -%}
 nifi.state.management.embedded.zookeeper.start={{ (is_zk_node and should_run_zk) | lower }}
 # Properties file that provides the ZooKeeper properties to use if <nifi.state.management.embedded.zookeeper.start> is set to true
@@ -210,25 +210,17 @@ nifi.cluster.node.connection.timeout=5 sec
 nifi.cluster.node.read.timeout=5 sec
 nifi.cluster.firewall.file=
 nifi.cluster.flow.election.max.wait.time=5 mins
-{% if nifi_state_management_embedded_zookeeper_start -%}
-nifi.cluster.flow.election.max.candidates={{ nifi_nodes_list[0:3] | length }}
-{% else -%}
 {% if nifi_zookeeper_servers | length > 0 -%}
 nifi.cluster.flow.election.max.candidates={{ nifi_zookeeper_servers | length }}
 {% else -%}
 nifi.cluster.flow.election.max.candidates=
 {% endif -%}
-{% endif -%}
 
 # zookeeper properties, used for cluster management #
-{% if nifi_state_management_embedded_zookeeper_start -%}
-nifi.zookeeper.connect.string={{ nifi_nodes_list[0:3] | join(':2181,') }}:2181
-{% else -%}
 {% if nifi_zookeeper_servers | length > 0 -%}
 nifi.zookeeper.connect.string={{ nifi_zookeeper_servers | join(':2181,') }}:2181
 {% else -%}
 nifi.zookeeper.connect.string=
-{% endif -%}
 {% endif -%}
 nifi.zookeeper.connect.timeout=3 secs
 nifi.zookeeper.session.timeout=3 secs
