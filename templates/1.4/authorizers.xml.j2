@@ -49,7 +49,7 @@
         <property name="Users File">{{ nifi_conf_dir }}/users.xml</property>
         <property name="Legacy Authorized Users File"></property>
 
-        <property name="Initial User Identity A"></property>
+        <property name="Initial User Identity A">{{ nifi_initial_admin }}</property>
         {% if nifi_nodes_list | length > 0 -%}
         {% for node in nifi_nodes_list -%}
         <property name="Initial User Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>

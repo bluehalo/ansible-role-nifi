@@ -41,6 +41,6 @@ autopurge.snapRetainCount={{ nifi_zookeeper_autopurge_snapRetainCount }}
 # in the dataDir of each node running an embedded zookeeper. See the
 # administration guide for more details.
 #
-{% for node_ip in nifi_nodes_list[0:3] -%}
+{% for node_ip in nifi_zookeeper_servers -%}
 server.{{  node_ip | splitext | last | replace('.', '') }}={{ node_ip }}:2888:3888
 {% endfor -%}

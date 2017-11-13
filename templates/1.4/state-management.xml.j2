@@ -58,14 +58,10 @@
     <cluster-provider>
         <id>zk-provider</id>
         <class>org.apache.nifi.controller.state.providers.zookeeper.ZooKeeperStateProvider</class>
-        {% if nifi_state_management_embedded_zookeeper_start -%}
-        <property name="Connect String">{{ nifi_nodes_list[0:3] | join(':2181,') }}:2181</property>
-        {% else -%}
         {% if nifi_zookeeper_servers | length > 0 -%}
         <property name="Connect String">{{ nifi_zookeeper_servers | join(':2181,') }}:2181</property>
         {% else -%}
         <property name="Connect String"></property>
-        {% endif -%}
         {% endif -%}
         <property name="Root Node">{{ nifi_zookeeper_root_node }}</property>
         <property name="Session Timeout">{{ nifi_zookeeper_session_timeout }}</property>
