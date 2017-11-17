@@ -104,6 +104,7 @@ Role Variables
     nifi_security_keystore: "{{ nifi_conf_dir }}/keystore.jks"
     nifi_security_keystoreType: jks
     nifi_security_keystorePasswd: ''
+    nifi_security_keyPasswd: "{{ nifi_security_keystorePasswd }}"
     nifi_security_truststore: "{{ nifi_conf_dir }}/truststore.jks"
     nifi_security_truststoreType: jks
     nifi_security_truststorePasswd: ''
