@@ -2,7 +2,7 @@
 # tasks file for nifi
 
 - name: Ensure nifi files are world-readable
-  file: path="{{ nifi_base_dir }}" state=directory mode="a+rX" recurse=yes
+  file: path="{{ nifi_home }}" state=directory mode="a+rX" recurse=yes
 
 - name: Ensure nifi symlink
   file: src="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" dest="{{ nifi_home }}" state=link
