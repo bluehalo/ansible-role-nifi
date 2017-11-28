@@ -34,7 +34,7 @@ Role Variables
     nifi_force_restart: False
 
     # A complete list of IP addresses for each nodes within the nifi cluster
-    nifi_nodes_list: []
+    nifi_authorized_nodes_list: []
     
     # nifi_extra_args is a list of key/value pairs that are made available in NiFi, for example:
     nifi_extra_args:
@@ -149,7 +149,7 @@ Install and configure NiFi
           nifi_node_jvm_memory: '10240M'
           nifi_custom_nars: [ '/opt/extra-nars' ]
           nifi_single_node: False
-          nifi_nodes_list: ['nifi-node-1', 'nifi-node-2']      
+          nifi_authorized_nodes_list: ['nifi-node-1', 'nifi-node-2']      
       pre_tasks:
         - name: Upload NiFi distribution (tar.gz) from localhost
           copy:

@@ -15,7 +15,7 @@ nifi_perform_restart: True
 nifi_force_restart: False
 
 # A complete list of IP addresses for each nodes within the nifi cluster
-nifi_nodes_list: []
+nifi_authorized_nodes_list: []
 
 # extra arg that are useful in expression languages
 nifi_extra_args: []
@@ -32,12 +32,18 @@ nifi_flowfile_repository: "{{ nifi_home }}/flowfile_repository"
 nifi_content_repositories: [ "{{ nifi_home }}/content_repository" ]
 nifi_provenance_repositories: [ "{{ nifi_home }}/provenance_repository" ]
 
+# Web properties
+nifi_input_socket_host:
+nifi_web_http_port: 8080
+
 # NiFi cluster settings
 nifi_single_node: True
-nifi_input_socket_host:
-nifi_input_socket_port:
+nifi_cluster_node_address:
 nifi_cluster_node_protocol_port:
-nifi_web_http_port: 8080
+
+# Site to Site properties
+nifi_remote_input_host:
+nifi_remote_input_socket_port:
 
 # Queue swap settings
 nifi_queue_swap_threshold: 20000

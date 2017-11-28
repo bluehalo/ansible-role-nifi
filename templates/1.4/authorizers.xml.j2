@@ -50,8 +50,8 @@
         <property name="Legacy Authorized Users File"></property>
 
         <property name="Initial User Identity A">{{ nifi_initial_admin }}</property>
-        {% if nifi_nodes_list | length > 0 -%}
-        {% for node in nifi_nodes_list -%}
+        {% if nifi_authorized_nodes_list | length > 0 -%}
+        {% for node in nifi_authorized_nodes_list -%}
         <property name="Initial User Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>
         {% endfor -%}
         {% endif -%}
@@ -238,8 +238,8 @@
         <property name="Initial Admin Identity">{{ nifi_initial_admin | default('') }}</property>
         <property name="Legacy Authorized Users File"></property>
 
-        {% if nifi_nodes_list | length > 0 -%}
-        {% for node in nifi_nodes_list -%}
+        {% if nifi_authorized_nodes_list | length > 0 -%}
+        {% for node in nifi_authorized_nodes_list -%}
         <property name="Node Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>
         {% endfor -%}
         {% endif -%}
@@ -297,8 +297,8 @@
         <property name="Users File">{{ nifi_conf_dir }}/users.xml</property>
         <property name="Initial Admin Identity">{{ nifi_initial_admin | default('') }}</property>
         <property name="Legacy Authorized Users File"></property>
-        {% if nifi_nodes_list | length > 0 -%}
-        {% for node in nifi_nodes_list -%}
+        {% if nifi_authorized_nodes_list | length > 0 -%}
+        {% for node in nifi_authorized_nodes_list -%}
         <property name="Node Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>
         {% endfor -%}
         {% endif -%}
