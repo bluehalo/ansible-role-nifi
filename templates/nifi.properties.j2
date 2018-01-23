@@ -180,8 +180,19 @@ nifi.security.truststoreType=
 nifi.security.truststorePasswd=
 {% endif -%}
 nifi.security.needClientAuth=
+{% if nifi_authorizers_ldap_enabled %}
+
+nifi.security.user.authorizer=managed-authorizer
+{% else %}
+
 nifi.security.user.authorizer=file-provider
+{% endif %}
+
+{% if nifi_login_identity_providers_authorizers_ldap_enabled %}
+nifi.security.user.login.identity.provider=ldap-provider
+{% else %}
 nifi.security.user.login.identity.provider=
+{% endif %}
 nifi.security.ocsp.responder.url=
 nifi.security.ocsp.responder.certificate=
 
