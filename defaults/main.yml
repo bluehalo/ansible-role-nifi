@@ -37,6 +37,7 @@ nifi_input_socket_host:
 nifi_input_socket_port:
 nifi_cluster_node_protocol_port:
 nifi_web_http_port: 8080
+nifi_web_https_port: 8443
 
 # Queue swap settings
 nifi_queue_swap_threshold: 20000
@@ -78,6 +79,8 @@ nifi_zookeeper_autopurge_snapRetainCount: 30
 # Security settings
 nifi_initial_admin:
 nifi_is_secure: False
+nifi_authorizers_ldap_enabled: False
+nifi_login_identity_providers_authorizers_ldap_enabled: False
 
 # Logback logging levels and settings
 nifi_log_app_file_retention: 10
@@ -101,3 +104,5 @@ nifi_log_level_org_apache_nifi_bootstrap_Command: INFO
 nifi_log_level_org_apache_nifi_web_filter_RequestLogger: INFO
 nifi_log_level_org_wali: WARN
 nifi_custom_log_levels: []
+
+
