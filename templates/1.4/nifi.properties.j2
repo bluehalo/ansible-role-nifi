@@ -258,4 +258,4 @@ nifi.kerberos.spnego.authentication.expiration=12 hours
 
 # external properties files for variable registry
 # supports a comma delimited list of file locations
-nifi.variable.registry.properties={{ nifi_conf_dir }}/extra-args.properties
+nifi.variable.registry.properties={{ nifi_variable_registry_properties | join(',') }}

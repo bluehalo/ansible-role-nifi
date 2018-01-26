@@ -116,3 +116,6 @@ nifi_log_level_org_apache_nifi_bootstrap_Command: INFO
 nifi_log_level_org_apache_nifi_web_filter_RequestLogger: INFO
 nifi_log_level_org_wali: WARN
 nifi_custom_log_levels: []
+
+# Extra Properties
+nifi_variable_registry_properties: [ "{{ nifi_conf_dir }}/extra-args.properties" ]
