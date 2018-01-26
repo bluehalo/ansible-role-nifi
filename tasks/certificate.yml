@@ -1,0 +1,93 @@
+---
+# tasks file for nifi
+
+
+
+- stat:
+    path: "{{ nifi_certs_dir}}/{{ ansible_hostname }}"
+  register: cert_stat
+
+- block: 
+  - name: Ensure nifi symlink
+    file: 
+      src: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_toolkit_version }}"
+      dest: "{{ nifi_toolkit_home }}"
+      state: link
+
+  - name: Defining command to run.
+    set_fact:
+      nftk_run_cmd_fact: >
+        {{ nifi_toolkit_home }}/bin/tls-toolkit.sh
+        standalone 
+        -n '{{ ansible_hostname }}'
+        --nifiDnSuffix ',OU=NIFI'
+        -O -c 'nifi_ca'
+        -o {{ nifi_certs_dir}}
+        {% if nifi_keypasswd is defined %}-K {{ nifi_keypasswd }}{% endif %}
+        {% if nifi_truststorepasswd is defined %}-P {{ nifi_truststorepasswd }}{% endif %}
+        {% if nifi_keystorepasswd is defined %}-S {{ nifi_keystorepasswd }}{% endif %}
+
+  - name: Copy CA certificates
+    copy:
+      content: "{{ item.content }}"
+      dest: "{{ item.file }}"
+      owner: root
+      group: root
+      mode: 0600
+    no_log: True
+    with_items: "{{ nifi_deploy_ca_certs }}"
+
+  - name: Running the command.
+    shell: "{{ nftk_run_cmd_fact }}"
+    args:
+      chdir: "{{ nifi_toolkit_home }}/bin/"
+      creates: "{{ nifi_certs_dir}}/{{ ansible_hostname }}"
+    register: my_nifi_toolkit_result
+    notify:
+      - restart nifi
+    failed_when: "my_nifi_toolkit_result.stderr is defined and 'FAILED' in my_nifi_toolkit_result.stderr"
+
+  - name: Remove CA certificates
+    file: 
+      path: "{{ item.file }}"
+      state: absent
+    no_log: True
+    with_items:
+      - "{{ nifi_deploy_ca_certs }}"
+
+  - name: Find cert dirs
+    find:
+      paths: "{{ nifi_conf_dir }}/certs"
+      recurse: yes
+      file_type: directory
+    no_log: True
+    register: cert_dirs
+
+  - name: Find cert files
+    find:
+      paths: "{{ nifi_conf_dir }}/certs"
+      recurse: yes
+      file_type: file
+    no_log: True
+    register: cert_files
+
+  - name: Ensure certs dir are readable by nifi
+    file:
+      path: "{{ item.path }}"
+      state: directory
+      owner: "{{ nifi_user }}"
+      group: "{{ nifi_user }}"
+      mode: 0700
+    with_items:
+      - "{{ cert_dirs.files }}"
+
+  - name: Ensure certs dir are readable by nifi
+    file:
+      path: "{{ item.path }}"
+      state: file
+      owner: "{{ nifi_user }}"
+      group: "{{ nifi_user }}"
+      mode: 0600
+    with_items:
+      - "{{ cert_files.files }}"
+  when: not cert_stat.stat.exists

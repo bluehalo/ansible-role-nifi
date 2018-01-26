@@ -1,53 +1,74 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
-  Licensed to the Apache Software Foundation (ASF) under one or more
-  contributor license agreements.  See the NOTICE file distributed with
-  this work for additional information regarding copyright ownership.
-  The ASF licenses this file to You under the Apache License, Version 2.0
-  (the "License"); you may not use this file except in compliance with
-  the License.  You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-<!--
-    This file lists the authority providers to use when running securely. In order
-    to use a specific provider it must be configured here and it's identifier
-    must be specified in the nifi.properties file.
--->
 <authorizers>
 
-    <!--
-        The FileAuthorizer is NiFi's provided authorizer and has the following properties:
+{%- if nifi_authorizers_ldap_enabled %}
 
-        - Authorizations File - The file where the FileAuthorizer will store policies.
+  <userGroupProvider>
+    <identifier>file-user-group-provider</identifier>
+    <class>org.apache.nifi.authorization.FileUserGroupProvider</class>
+    <property name="Users File">{{ nifi_authorizers_users_file }}</property>
+    <property name="Legacy Authorized Users File"></property>
+    <property name="Initial User Identity 1"></property>
+  </userGroupProvider>
 
-        - Users File - The file where the FileAuthorizer will store users and groups.
+  <userGroupProvider>
+    <identifier>ldap-user-group-provider</identifier>
+    <class>org.apache.nifi.ldap.tenants.LdapUserGroupProvider</class>
+    <property name="Authentication Strategy">SIMPLE</property>
 
-        - Initial Admin Identity - The identity of an initial admin user that will be granted access to the UI and
-            given the ability to create additional users, groups, and policies. The value of this property could be
-            a DN when using certificates or LDAP, or a Kerberos principal. This property will only be used when there
-            are no other users, groups, and policies defined. If this property is specified then a Legacy Authorized
-            Users File can not be specified.
+    <property name="Manager DN">{{ nifi_authorizers_manager_dn }}</property>
+    <property name="Manager Password">{{ nifi_authorizers_manager_password }}</property>
 
-            NOTE: Any identity mapping rules specified in nifi.properties will also be applied to the initial admin identity,
-            so the value should be the unmapped identity.
+    <property name="Referral Strategy">{{ nifi_authorizers_referral_strategy }}</property>
+    <property name="Connect Timeout">{{ nifi_authorizers_connect_timeout }}</property>
+    <property name="Read Timeout">{{ nifi_authorizers_read_timeout }}</property>
 
-        - Legacy Authorized Users File - The full path to an existing authorized-users.xml that will be automatically
-            converted to the new authorizations model. If this property is specified then an Initial Admin Identity can
-            not be specified, and this property will only be used when there are no other users, groups, and policies defined.
+    <property name="Url">{{ nifi_authorizers_url }}</property>
+    <property name="Page Size"></property>
+    <property name="Sync Interval">{{ nifi_authorizers_sync_interval }}</property>
 
-        - Node Identity [unique key] - The identity of a NiFi cluster node. When clustered, a property for each node
-            should be defined, so that every node knows about every other node. If not clustered these properties can be ignored.
-            The name of each property must be unique, for example for a three node cluster:
-            "Node Identity A", "Node Identity B", "Node Identity C" or "Node Identity 1", "Node Identity 2", "Node Identity 3"
+    <property name="User Search Base">{{ nifi_authorizers_user_search_base }}</property>
+    <property name="User Object Class">{{ nifi_authorizers_user_object_class }}</property>
+    <property name="User Identity Attribute">{{ nifi_authorizers_user_identity_attribute }}</property>
+    <property name="User Group Name Attribute">{{ nifi_authorizers_user_group_name_attribute }}</property>
+    <property name="User Search Scope">{{ nifi_authorizers_user_search_scope }}</property>
+    <property name="User Search Filter">{{ nifi_authorizers_user_search_filter }}</property>
 
-            NOTE: Any identity mapping rules specified in nifi.properties will also be applied to the node identities,
-            so the values should be the unmapped identities (i.e. full DN from a certificate).
-    -->
+    <property name="Group Search Base">{{ nifi_authorizers_group_search_base }}</property>
+    <property name="Group Object Class">{{ nifi_authorizers_group_object_class }}</property>
+    <property name="Group Name Attribute">{{ nifi_authorizers_group_identity_attribute }}</property>
+    <property name="Group Member Attribute">{{ nifi_authorizers_group_member_attribute }}</property>
+    <property name="Group Search Scope">{{ nifi_authorizers_group_search_scope }}</property>
+    <property name="Group Search Filter">{{ nifi_authorizers_group_search_filter }}</property>
+  </userGroupProvider>
+
+  <userGroupProvider>
+    <identifier>composite-configurable-user-group-provider</identifier>
+    <class>org.apache.nifi.authorization.CompositeConfigurableUserGroupProvider</class>
+    <property name="Configurable User Group Provider">file-user-group-provider</property>
+    <property name="User Group Provider 1">ldap-user-group-provider</property>
+  </userGroupProvider>
+
+  <accessPolicyProvider>
+    <identifier>file-access-policy-provider</identifier>
+    <class>org.apache.nifi.authorization.FileAccessPolicyProvider</class>
+    <property name="User Group Provider">composite-configurable-user-group-provider</property>
+    <property name="Authorizations File">{{ nifi_authorizers_authorizations_file }}</property>
+    <property name="Initial Admin Identity">{{ nifi_authorizers_initial_admin_identity }}</property>
+        {% if nifi_nodes_list | length > 0 -%}
+        {% for node in nifi_nodes_list -%}
+        <property name="Node Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>
+        {% endfor -%}
+        {% endif -%}
+ </accessPolicyProvider>
+
+  <authorizer>
+    <identifier>managed-authorizer</identifier>
+    <class>org.apache.nifi.authorization.StandardManagedAuthorizer</class>
+    <property name="Access Policy Provider">file-access-policy-provider</property>
+  </authorizer>
+
+{%- else %}
     <authorizer>
         <identifier>file-provider</identifier>
         <class>org.apache.nifi.authorization.FileAuthorizer</class>
@@ -65,4 +86,5 @@
         <property name="Node Identity 2"></property>
         -->
     </authorizer>
+{%- endif %}
 </authorizers>

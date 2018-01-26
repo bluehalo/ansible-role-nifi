@@ -139,11 +139,11 @@ nifi.remote.input.http.transaction.ttl=30 sec
 # web properties #
 nifi.web.war.directory=./lib
 {% if nifi_is_secure -%}
-nifi.web.http.host=
-nifi.web.http.port=
+nifi.web.http.host={{ nifi_input_socket_host }}
+nifi.web.http.port={{ nifi_web_http_port }}
 nifi.web.http.network.interface.default=
 nifi.web.https.host={{ nifi_input_socket_host }}
-nifi.web.https.port=9443
+nifi.web.https.port={{ nifi_web_https_port }}
 nifi.web.https.network.interface.default=
 {% else -%}
 nifi.web.http.host={{ nifi_input_socket_host }}
@@ -163,13 +163,13 @@ nifi.sensitive.props.provider=BC
 nifi.sensitive.props.additional.keys=
 
 {% if nifi_is_secure -%}
-nifi.security.keystore={{ nifi_conf_dir }}/keystore.jks
+nifi.security.keystore={{ nifi_certs_dir }}/{{ ansible_hostname }}/keystore.jks
 nifi.security.keystoreType=jks
-nifi.security.keystorePasswd=wildfire
-nifi.security.keyPasswd=wildfire
-nifi.security.truststore={{ nifi_conf_dir }}/truststore.jks
+nifi.security.keystorePasswd={{ nifi_keystorepasswd }}
+nifi.security.keyPasswd={{ nifi_keypasswd }}
+nifi.security.truststore={{ nifi_certs_dir }}/{{ ansible_hostname }}/truststore.jks
 nifi.security.truststoreType=jks
-nifi.security.truststorePasswd=wildfire
+nifi.security.truststorePasswd={{ nifi_truststorepasswd }}
 {% else -%}
 nifi.security.keystore=
 nifi.security.keystoreType=
@@ -180,8 +180,19 @@ nifi.security.truststoreType=
 nifi.security.truststorePasswd=
 {% endif -%}
 nifi.security.needClientAuth=
+{% if nifi_authorizers_ldap_enabled %}
+
+nifi.security.user.authorizer=managed-authorizer
+{% else %}
+
 nifi.security.user.authorizer=file-provider
+{% endif %}
+
+{% if nifi_login_identity_providers_authorizers_ldap_enabled %}
+nifi.security.user.login.identity.provider=ldap-provider
+{% else %}
 nifi.security.user.login.identity.provider=
+{% endif %}
 nifi.security.ocsp.responder.url=
 nifi.security.ocsp.responder.certificate=
 

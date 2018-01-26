@@ -20,6 +20,7 @@
   file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
   with_items:
     - "{{ nifi_conf_dir }}"
+    - "{{ nifi_certs_dir }}"
     - "{{ nifi_log_dir }}"
     - "{{ nifi_pid_dir }}"
     - "{{ nifi_nar_dir }}"
