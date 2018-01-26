@@ -54,7 +54,7 @@
     <class>org.apache.nifi.authorization.FileAccessPolicyProvider</class>
     <property name="User Group Provider">composite-configurable-user-group-provider</property>
     <property name="Authorizations File">{{ nifi_authorizers_authorizations_file }}</property>
-    <property name="Initial Admin Identity">nifi-staging-sys</property>
+    <property name="Initial Admin Identity">{{ nifi_authorizers_initial_admin_identity }}</property>
         {% if nifi_nodes_list | length > 0 -%}
         {% for node in nifi_nodes_list -%}
         <property name="Node Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>
