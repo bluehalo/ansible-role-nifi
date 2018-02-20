@@ -35,7 +35,7 @@
         </rollingPolicy>
         <immediateFlush>true</immediateFlush>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
+            <pattern>{{ nifi_logback_pattern }}</pattern>
         </encoder>
     </appender>
 
