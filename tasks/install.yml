@@ -1,8 +1,35 @@
 ---
 # tasks file for nifi
+- name: Create nifi user and group
+  user:
+    name: nifi
+    state: present
+    createhome: no
+    uid: "{{ nifi_user_pid }}"
 
 - name: Ensure nifi files are world-readable
-  file: path="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" state=directory mode="a+rX" recurse=yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+    owner: nifi
+    group: nifi
+    #mode: "a+rX"
+
+  with_items:
+    - "{{ nifi_base_dir }}/nifi-{{ nifi_version }}"
+    - "{{ nifi_etc_dir }}"
+    - "{{ nifi_log_dir }}"
+    - "{{ nifi_pid_dir }}"
+
+- name: Download NiFi binaries for version {{ nifi_version }}
+  unarchive:
+    src: "http://apache.uib.no/nifi/{{ nifi_version }}/nifi-{{ nifi_version }}-bin.tar.gz"
+    dest: "{{ nifi_base_dir }}"
+    owner: nifi
+    group: nifi
+    remote_src: yes
+    creates: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}/bin/nifi.sh"
 
 - name: Ensure nifi symlink
   file: src="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" dest="{{ nifi_home }}" state=link

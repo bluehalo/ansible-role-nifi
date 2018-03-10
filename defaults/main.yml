@@ -4,8 +4,8 @@ nifi_major_version: "{{ nifi_version | splitext | first }}"
 
 # installation locations
 nifi_base_dir: /opt/nifi
-nifi_etc_dir: /etc/nifi
-nifi_log_dir: /var/log/nifi
+nifi_etc_dir: /opt/nifi/etc
+nifi_log_dir: /opt/nifi/log/nifi
 nifi_pid_dir: /var/run/nifi
 
 # whether to restart nifi after making changes; default is True, for a cluster you may wish to disable
@@ -23,8 +23,10 @@ nifi_extra_args: []
 # List of directories for nifi to look in for additional nars.
 nifi_custom_nars: []
 
+# NiFi Java settings
 nifi_node_jvm_memory: '1024m'
 nifi_java_command: 'java'
+nifi_java_home: '/usr/java/jdk1.8.0_144'
 
 # defaults file / directories for nifi
 nifi_database_repository: "{{ nifi_home }}/database_repository"
@@ -84,7 +86,7 @@ nifi_zookeeper_autopurge_snapRetainCount: 30
 
 # Security settings
 nifi_initial_admin:
-nifi_is_secure: False
+nifi_is_secure: True
 nifi_web_https_port: 8443
 nifi_security_keystore: "{{ nifi_conf_dir }}/keystore.jks"
 nifi_security_keystoreType: jks
