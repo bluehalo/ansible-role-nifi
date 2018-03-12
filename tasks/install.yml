@@ -38,12 +38,18 @@
     owner: nifi
     group: nifi
     remote_src: yes
-    creates: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}/bin/nifi.sh"
+    creates: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}/bin/tls-toolkit.sh"
 
 - name: Ensure nifi symlink
   file: src="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" dest="{{ nifi_home }}" state=link
   notify:
     - restart nifi
+
+- name: Ensure nifi-toolkit symlink
+  file: src="{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}" dest="{{ nifi_toolkit_home }}" state=link
+  notify:
+    - restart nifi
+
 
 - name: Create nifi systemd service
   template: src=nifi.service.j2 dest="{{ nifi_service }}" owner=root group=root mode=0644
