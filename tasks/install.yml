@@ -5,7 +5,7 @@
     name: nifi
     state: present
     createhome: no
-    uid: "{{ nifi_user_pid }}"
+    #uid: "{{ nifi_user_pid }}"
 
 - name: Ensure nifi files are world-readable
   file:
@@ -21,6 +21,7 @@
     - "{{ nifi_etc_dir }}"
     - "{{ nifi_log_dir }}"
     - "{{ nifi_pid_dir }}"
+    - "{{ nifi_data_dir }}"
 
 - name: Download NiFi binaries for version {{ nifi_version }}
   unarchive:
@@ -39,6 +40,15 @@
     group: nifi
     remote_src: yes
     creates: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}/bin/tls-toolkit.sh"
+
+- name: Create nifi-toolkit systemd service
+  when: inventory_hostname in groups['tls_server']
+  template: src=nifi-toolkit.service.j2 dest="{{ nifi_toolkit_service }}" owner=root group=root mode=0644
+  notify:
+    - reload systemctl
+    - restart nifi-toolkit
+
+- meta: flush_handlers
 
 - name: Ensure nifi symlink
   file: src="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" dest="{{ nifi_home }}" state=link

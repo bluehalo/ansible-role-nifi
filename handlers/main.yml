@@ -7,3 +7,6 @@
 - name: restart nifi
   service: name=nifi state=restarted enabled=yes
   when: nifi_perform_restart
+
+- name: restart nifi-toolkit
+  service: name=nifi-toolkit state=restarted enabled=yes

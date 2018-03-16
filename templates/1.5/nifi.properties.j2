@@ -48,12 +48,12 @@ nifi.state.management.configuration.file={{ nifi_conf_dir }}/state-management.xm
 nifi.state.management.provider.local=local-provider
 # The ID of the cluster-wide state provider. This will be ignored if NiFi is not clustered but must be populated if running in a cluster.
 nifi.state.management.provider.cluster=zk-provider
+
 # Specifies whether or not this instance of NiFi should run an embedded ZooKeeper server
-{% set is_zk_node = nifi_zookeeper_servers | intersect([ec2_private_ip_address]) | length > 0 -%}
-{% set should_run_zk = nifi_state_management_embedded_zookeeper_start -%}
-nifi.state.management.embedded.zookeeper.start={{ (is_zk_node and should_run_zk) | lower }}
+nifi.state.management.embedded.zookeeper.start={{ nifi_state_management_embedded_zookeeper_start }}
+
 # Properties file that provides the ZooKeeper properties to use if <nifi.state.management.embedded.zookeeper.start> is set to true
-nifi.state.management.embedded.zookeeper.properties={{ nifi_conf_dir }}/zookeeper.properties
+# nifi.state.management.embedded.zookeeper.properties={{ nifi_conf_dir }}/zookeeper.properties
 
 # H2 Settings
 nifi.database.directory={{ nifi_database_repository }}
@@ -153,6 +153,8 @@ nifi.web.https.network.interface.default=
 {% endif -%}
 nifi.web.jetty.working.directory=./work/jetty
 nifi.web.jetty.threads=200
+
+nifi.web.proxy.host={{ nifi_web_proxy_host_list }}
 
 # security properties #
 nifi.sensitive.props.key=

@@ -1,0 +1,18 @@
+{
+  "days" : 1095,
+  "keySize" : 2048,
+  "keyPairAlgorithm" : "RSA",
+  "signingAlgorithm" : "SHA256WITHRSA",
+  "dn" : "CN={{ nifi_host_this }},OU=NIFI",
+  "domainAlternativeNames" : null,
+  "keyStore" : "{{ nifi_base_dir }}/nifi-toolkit-current/conf/nifi-ca-keystore.jks",
+  "keyStoreType" : "jks",
+  "keyStorePassword" : "FD8yzMePIDT/rVE4wVn5tWqZM/ZlsZm0o8+VQAOWZ68",
+  "keyPassword" : "FD8yzMePIDT/rVE4wVn5tWqZM/ZlsZm0o8+VQAOWZ68",
+  "token" : "thisIsATokenToPreventMITM",
+  "caHostname" : "docker8.kb.test",
+  "port" : 9999,
+  "dnPrefix" : "CN=",
+  "dnSuffix" : ", OU=NIFI",
+  "reorderDn" : true
+}
