@@ -88,18 +88,19 @@ nifi_zookeeper_autopurge_purgeInterval: 24
 nifi_zookeeper_autopurge_snapRetainCount: 30
 
 # Security settings
-nifi_initial_admin: ""
+nifi_initial_admin: "CN=take,OU=NIFI"
 nifi_is_secure: True
 nifi_web_https_port: 8443
-nifi_security_keystore: "{{ nifi_conf_dir }}/keystore.jks"
+nifi_security_keystore: "{{ nifi_etc_dir }}/keystore.jks"
 nifi_security_keystoreType: jks
-nifi_security_keystorePasswd: ''
+nifi_security_keystorePasswd: "{{ nifi_key_store_password }}"
 nifi_security_keyPasswd: "{{ nifi_security_keystorePasswd }}"
-nifi_security_truststore: "{{ nifi_conf_dir }}/truststore.jks"
+nifi_security_truststore: "{{ nifi_etc_dir }}/truststore.jks"
 nifi_security_truststoreType: jks
-nifi_security_truststorePasswd: ''
+nifi_security_truststorePasswd: "{{ nifi_trust_store_password }}"
 nifi_tls_port: 9999
-
+nifi_web_proxy_host_list: ''
+nifi_web_proxy_context_path: ''
 
 # Logback logging levels and settings
 nifi_log_app_file_retention: 10
