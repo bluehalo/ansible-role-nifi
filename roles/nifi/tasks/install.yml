@@ -41,6 +41,9 @@
     remote_src: yes
     creates: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}/bin/tls-toolkit.sh"
 
+- name: Ensure nifi-toolkit symlink
+  file: src="{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}" dest="{{ nifi_toolkit_home }}" state=link
+
 - name: Create nifi-toolkit tls-server config
   when: inventory_hostname in groups['tls_server']
   template:
@@ -77,10 +80,7 @@
   notify:
     - restart nifi
 
-- name: Ensure nifi-toolkit symlink
-  file: src="{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}" dest="{{ nifi_toolkit_home }}" state=link
-  notify:
-    - restart nifi
+
 
 
 - name: Create nifi systemd service

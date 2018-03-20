@@ -1,0 +1,10 @@
+- include_vars: ../../nifi/defaults/main.yml
+
+- name: Download NiFi-Registry binaries for version {{ nifi_version }}
+  unarchive:
+    src: "http://apache.uib.no/nifi/nifi-registry/nifi-registry-{{ nifi_registry_version }}/nifi-registry-{{ nifi_registry_version }}-bin.tar.gz"
+    dest: "{{ nifi_base_dir }}"
+    owner: nifi
+    group: nifi
+    remote_src: yes
+    creates: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}/bin/nifi.sh"
