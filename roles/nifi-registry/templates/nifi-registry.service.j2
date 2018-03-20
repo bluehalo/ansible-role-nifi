@@ -1,0 +1,18 @@
+[Unit]
+Description=Apache NiFi Registry
+After=syslog.target network.target
+
+[Service]
+User={{ nifi_user }}
+Type=forking
+PIDFile={{ nifi_registry_pid_file }}
+# Run ExecStartPre with root-permissions
+PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/mkdir -p {{ nifi_pid_dir }}
+ExecStartPre=/usr/bin/chown -R {{ nifi_user }} {{ nifi_pid_dir }}
+Environment="JAVA_HOME={{ nifi_java_home }}"
+ExecStart={{ nifi_base_dir }}/nifi-registry-current/bin/nifi-registry.sh start
+ExecStop={{ nifi_base_dir }}/nifi-registry-current/bin/nifi-registry.sh stop
+
+[Install]
+WantedBy=multi-user.target

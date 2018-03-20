@@ -2,6 +2,8 @@
 # defaults file for nifi
 nifi_major_version: "{{ nifi_version | splitext | first }}"
 
+nifi_user: nifi
+
 # installation locations
 nifi_base_dir: /opt/nifi
 nifi_data_dir: /opt/nifi_data
@@ -99,7 +101,7 @@ nifi_security_truststore: "{{ nifi_etc_dir }}/truststore.jks"
 nifi_security_truststoreType: jks
 nifi_security_truststorePasswd: "{{ nifi_trust_store_password }}"
 nifi_tls_port: 9999
-nifi_need_client_auth: 'true'
+nifi_need_client_auth: 'false'
 nifi_web_proxy_host_list: ''
 nifi_web_proxy_context_path: ''
 

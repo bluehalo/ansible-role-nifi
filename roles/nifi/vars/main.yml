@@ -1,7 +1,7 @@
 ---
 # vars file for nifi
 
-nifi_user: nifi
+
 nifi_service: /etc/systemd/system/nifi.service
 nifi_toolkit_service: /etc/systemd/system/nifi-toolkit.service
 

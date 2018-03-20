@@ -1,0 +1,57 @@
+# web properties #
+{% if nifi_registry_is_secure -%}
+nifi.registry.web.http.host=
+nifi.registry.web.http.port=
+nifi.registry.web.https.host={{ nifi_registry_web_host }}
+nifi.registry.web.https.port={{ nifi_registry_web_https_port }}
+{% else -%}
+nifi.registry.web.http.host={{ nifi_registry_web_host }}
+nifi.registry.web.http.port={{ nifi_registry_web_http_port }}
+nifi.registry.web.https.host=
+nifi.registry.web.https.port=
+{% endif -%}
+nifi.registry.web.war.directory=./lib
+nifi.registry.web.jetty.working.directory=./work/jetty
+nifi.registry.web.jetty.threads=200
+
+# security properties #
+nifi.registry.security.keystore=
+nifi.registry.security.keystoreType=
+nifi.registry.security.keystorePasswd=
+nifi.registry.security.keyPasswd=
+nifi.registry.security.truststore=
+nifi.registry.security.truststoreType=
+nifi.registry.security.truststorePasswd=
+nifi.registry.security.needClientAuth=
+nifi.registry.security.authorizers.configuration.file=./conf/authorizers.xml
+nifi.registry.security.authorizer=managed-authorizer
+nifi.registry.security.identity.providers.configuration.file=./conf/identity-providers.xml
+nifi.registry.security.identity.provider=
+
+# sensitive property protection properties #
+# nifi.registry.sensitive.props.additional.keys=
+
+# providers properties #
+nifi.registry.providers.configuration.file=./conf/providers.xml
+
+# database properties
+nifi.registry.db.directory=./database
+nifi.registry.db.url.append=;LOCK_TIMEOUT=25000;WRITE_DELAY=0;AUTO_SERVER=FALSE
+
+# extension directories #
+# Each property beginning with "nifi.registry.extension.dir." will be treated as location for an extension,
+# and a class loader will be created for each location, with the system class loader as the parent
+#
+#nifi.registry.extension.dir.1=/path/to/extension1
+#nifi.registry.extension.dir.2=/path/to/extension2
+
+# Identity Mapping Properties #
+# These properties allow normalizing user identities such that identities coming from different identity providers
+# (certificates, LDAP, Kerberos) can be treated the same internally in NiFi. The following example demonstrates normalizing
+# DNs from certificates and principals from Kerberos into a common identity string:
+#
+# nifi.registry.security.identity.mapping.pattern.dn=^CN=(.*?), OU=(.*?), O=(.*?), L=(.*?), ST=(.*?), C=(.*?)$
+# nifi.registry.security.identity.mapping.value.dn=$1@$2
+# nifi.registry.security.identity.mapping.pattern.kerb=^(.*?)/instance@(.*?)$
+# nifi.registry.security.identity.mapping.value.kerb=$1@$2
+

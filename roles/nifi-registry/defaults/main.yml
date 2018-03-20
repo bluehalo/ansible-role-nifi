@@ -1,1 +1,14 @@
 nifi_registry_version: "0.1.0"
+
+nifi_registry_is_secure: False
+
+nifi_registry_web_host: "{{ nifi_this_host }}"
+nifi_registry_web_http_port: 18080
+nifi_registry_web_https_host: 18443
+
+
+
+### systemd
+nifi_registry_service: /etc/systemd/system/nifi-registry.service
+nifi_registry_pid_file: "{{ nifi_pid_dir }}/nifi-registry.pid"
+

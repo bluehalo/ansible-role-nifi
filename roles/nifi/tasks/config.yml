@@ -1,4 +1,5 @@
 ---
+# TODO: this always restarts nifi... fix
 - name: Register config.json for private keys
   shell: cat {{ nifi_etc_dir }}/config.json | grep Password
   register: config_result

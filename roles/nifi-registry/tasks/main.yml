@@ -1,5 +1,15 @@
 - include_vars: ../../nifi/defaults/main.yml
 
+- name: Ensure nifi-registry required directories exist and are world-readable
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
+  with_items:
+    - "{{ nifi_base_dir }}/nifi-registry-{{ nifi_registry_version }}"
+
 - name: Download NiFi-Registry binaries for version {{ nifi_version }}
   unarchive:
     src: "http://apache.uib.no/nifi/nifi-registry/nifi-registry-{{ nifi_registry_version }}/nifi-registry-{{ nifi_registry_version }}-bin.tar.gz"
@@ -7,4 +17,47 @@
     owner: nifi
     group: nifi
     remote_src: yes
-    creates: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}/bin/nifi.sh"
+    creates: "{{ nifi_base_dir }}/nifi-registry-{{ nifi_registry_version }}/bin/nifi-registry.sh"
+
+- name: Ensure nifi-registry symlink
+  file:
+    src: "{{ nifi_base_dir }}/nifi-registry-{{ nifi_registry_version }}"
+    dest: "{{ nifi_base_dir }}/nifi-registry-current"
+    state: link
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+  notify:
+    - restart nifi-registry
+
+
+- name: Create nifi-registry systemd service
+  template: src=nifi-registry.service.j2 dest="{{ nifi_registry_service }}" owner=root group=root mode=0644
+  notify:
+    - reload systemctl
+    - restart nifi-registry
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version >= "7"
+  notify:
+    - reload systemctl
+    - restart nifi-registry
+
+
+- name: Push nifi-registry configs
+  template:
+    src: nifi-registry.properties.j2
+    dest: "{{ nifi_base_dir }}/nifi-registry-current/conf/nifi-registry.properties"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0644
+  notify:
+    - restart nifi-registry
+
+
+- name: Push nifi-registry ENV
+  template:
+    src: nifi-registry-env.sh.j2
+    dest: "{{ nifi_base_dir }}/nifi-registry-current/bin/nifi-registry-env.sh"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0770
+  notify:
+    - restart nifi-registry

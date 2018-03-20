@@ -17,7 +17,7 @@
     #mode: "a+rX"
 
   with_items:
-    - "{{ nifi_base_dir }}/nifi-{{ nifi_version }}"
+    - "{{ nifi_base_dir }}"
     - "{{ nifi_etc_dir }}"
     - "{{ nifi_log_dir }}"
     - "{{ nifi_pid_dir }}"
@@ -42,7 +42,12 @@
     creates: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}/bin/tls-toolkit.sh"
 
 - name: Ensure nifi-toolkit symlink
-  file: src="{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}" dest="{{ nifi_toolkit_home }}" state=link
+  file:
+    src: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}"
+    dest: "{{ nifi_toolkit_home }}"
+    state: link
+    owner: nifi
+    group: nifi
 
 - name: Create nifi-toolkit tls-server config
   when: inventory_hostname in groups['tls_server']
@@ -76,12 +81,14 @@
 
 
 - name: Ensure nifi symlink
-  file: src="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" dest="{{ nifi_home }}" state=link
+  file:
+    src: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}"
+    dest: "{{ nifi_home }}"
+    state: link
+    owner: nifi
+    group: nifi
   notify:
     - restart nifi
-
-
-
 
 - name: Create nifi systemd service
   template: src=nifi.service.j2 dest="{{ nifi_service }}" owner=root group=root mode=0644
@@ -91,13 +98,13 @@
   when: ansible_distribution == "CentOS" and ansible_distribution_major_version >= "7"
   tags: [ service ]
 
-- name: Create nifi init.d service
-  template: src=nifi-startup.sh.j2 dest=/etc/init.d/nifi owner=root group=root mode=0755
-  when: ansible_distribution == "Amazon" or (ansible_distribution == "CentOS" and ansible_distribution_major_version < "7")
-  tags: [ service ]
-
 - name: Ensure nifi-required directories exist and are world-readable
-  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
   with_items:
     - "{{ nifi_conf_dir }}"
     - "{{ nifi_log_dir }}"

@@ -1,0 +1,11 @@
+
+# #The java implementation to use.
+export JAVA_HOME="{{ nifi_java_home }}"
+
+export NIFI_REGISTRY_HOME=$(cd "${SCRIPT_DIR}" && cd .. && pwd)
+
+#The directory for the NiFi Registry pid file
+export NIFI_REGISTRY_PID_DIR="{{ nifi_pid_dir }}"
+
+#The directory for NiFi Registry log files
+export NIFI_REGISTRY_LOG_DIR="${NIFI_REGISTRY_HOME}/logs"
