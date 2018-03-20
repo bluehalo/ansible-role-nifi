@@ -3,6 +3,9 @@ hwregistry_base_dir: /opt/registry
 hwregistry_home: "{{ hwregistry_base_dir }}/hwr-current"
 hwregistry_user: registry
 hwregistry_java_home: /usr/java/jdk1.8.0_144
+hwregistry_pid_dir: "{{ hwregistry_home}}/logs"
+hwregistry_pid_file: "{{ hwregistry_pid_dir }}/registry.pid"
+hwregistry_service: /etc/systemd/system/hwregistry.service
 
 hwregistry_pgsql_host: "localhost"
 hwregistry_pgsql_user: "\"hwregistry\""

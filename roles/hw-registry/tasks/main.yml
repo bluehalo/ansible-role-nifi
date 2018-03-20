@@ -43,7 +43,7 @@
     owner: "{{ hwregistry_user }}"
     group: "{{ hwregistry_user }}"
     mode: 0775
-#  notify: restart hwregistry
+  notify: restart hwregistry
 
 # config
 - name: Set hwregistry conf
@@ -53,7 +53,9 @@
     owner: "{{ hwregistry_user }}"
     group: "{{ hwregistry_user }}"
     mode: 0775
-#  notify: restart hwregistry
+  notify: restart hwregistry
+
+# modify registry startup script to not use su -u -c because it prompts for password
 
 
 # setup database
@@ -62,15 +64,52 @@
     login_user: postgres
     login_password: "{{ pgsql_pass }}"
     name: "hwregistry"
-    password: "{{ hwregistry_pgsql_pass }}"
+    password: "{{ hwregistry_pass }}"
 
 - name: Create postgres schema_registry database
   postgresql_db:
     login_user: postgres
     login_password: "{{ pgsql_pass }}"
-    name: "hwregistry"
+    name: "schema_registry"
     owner: "hwregistry"
     state: present
     encoding: UTF-8
     #lc_collate: en_US.UTF-8
     template: template0
+
+- name: Validate db connection
+  command: "{{ hwregistry_home }}/bootstrap/bootstrap-storage.sh check-connection"
+
+## TODO: fix this!!!
+#- name: Check if tables have been created
+#  command: "echo '\dt' | PGPASSWORD={{ pgsql_pass }}  psql -U postgres -d schema_registry|grep schema_field_info|awk '{print $3;}'"
+#  register: result
+#
+#- debug:
+#   #msg: "keyStorePassword - {{ key_Store_Password }
+#    var: result.stdout
+
+# TODO: fix above and remove ignore_errors
+- name: Create db tables
+  command: "{{ hwregistry_home }}/bootstrap/bootstrap-storage.sh create"
+  ignore_errors: yes
+
+# Create deploy dir
+- name: Ensure hwregistry files are world-readable
+  file:
+    path: "{{ hwregistry_base_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ hwregistry_user }}"
+    group: "{{ hwregistry_user }}"
+
+- name: Create hwregistry systemd service
+  template:
+    src: hwregistry.service.j2
+    dest: "{{ hwregistry_service }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemctl
+    - restart hwregistry
