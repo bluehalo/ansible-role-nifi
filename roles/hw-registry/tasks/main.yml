@@ -1,0 +1,76 @@
+- include_vars: "{{ vault_file_path }}"
+
+# Create user
+- name: Create hwregistry user and group
+  user:
+    name: "{{ hwregistry_user }}"
+    state: present
+    createhome: no
+
+# Create deploy dir
+- name: Ensure hwregistry files are world-readable
+  file:
+    path: "{{ hwregistry_base_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ hwregistry_user }}"
+    group: "{{ hwregistry_user }}"
+
+# get hwregistry
+- name: Download hwregistry binaries for version {{ hwregistry_version }}
+  unarchive:
+    src: "https://github.com/hortonworks/registry/releases/download/v{{ hwregistry_version }}/hortonworks-registry-{{ hwregistry_version }}.tar.gz"
+    dest: "{{ hwregistry_base_dir }}"
+    owner: "{{ hwregistry_user }}"
+    group: "{{ hwregistry_user }}"
+    remote_src: yes
+    creates: "{{ hwregistry_base_dir }}/hortonworks-registry-{{ hwregistry_version }}/bin/registry-server-start.sh"
+
+# set symlinks
+- name: Ensure hwregistry symlink
+  file:
+    src: "{{ hwregistry_base_dir }}/hortonworks-registry-{{ hwregistry_version }}"
+    dest: "{{ hwregistry_home }}"
+    state: link
+    owner: "{{ hwregistry_user }}"
+    group: "{{ hwregistry_user }}"
+
+# config
+- name: Set hwregistry ENV
+  template:
+    src: registry-env.sh.j2
+    dest: "{{ hwregistry_home }}/conf/registry-env.sh"
+    owner: "{{ hwregistry_user }}"
+    group: "{{ hwregistry_user }}"
+    mode: 0775
+#  notify: restart hwregistry
+
+# config
+- name: Set hwregistry conf
+  template:
+    src: registry.yaml
+    dest: "{{ hwregistry_home }}/conf/registry.yaml"
+    owner: "{{ hwregistry_user }}"
+    group: "{{ hwregistry_user }}"
+    mode: 0775
+#  notify: restart hwregistry
+
+
+# setup database
+- name: Create postgres hwregistry user
+  postgresql_user:
+    login_user: postgres
+    login_password: "{{ pgsql_pass }}"
+    name: "hwregistry"
+    password: "{{ hwregistry_pgsql_pass }}"
+
+- name: Create postgres schema_registry database
+  postgresql_db:
+    login_user: postgres
+    login_password: "{{ pgsql_pass }}"
+    name: "hwregistry"
+    owner: "hwregistry"
+    state: present
+    encoding: UTF-8
+    #lc_collate: en_US.UTF-8
+    template: template0

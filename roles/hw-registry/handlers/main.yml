@@ -1,0 +1,5 @@
+- name: reload systemctl
+  command: systemctl daemon-reload
+
+- name: restart hwregistry
+  service: name=hwregistry state=restarted enabled=yes
