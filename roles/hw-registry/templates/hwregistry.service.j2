@@ -3,13 +3,13 @@ Description=Hortonworks Registry
 After=syslog.target network.target
 
 [Service]
-User={{ hwregistry_user }}
+User=root
 Type=forking
 PIDFile={{ hwregistry_pid_file }}
 # Run ExecStartPre with root-permissions
 PermissionsStartOnly=true
-ExecStartPre=-/usr/bin/mkdir -p {{ hwregistry_pid_dir }}
-ExecStartPre=/usr/bin/chown -R {{ hwregistry_user }} {{ hwregistry_pid_dir }}
+#ExecStartPre=-/usr/bin/mkdir -p {{ hwregistry_pid_dir }}
+#ExecStartPre=/usr/bin/chown -R {{ hwregistry_user }} {{ hwregistry_pid_dir }}
 Environment="JAVA_HOME={{ hwregistry_java_home }}"
 ExecStart={{ hwregistry_home }}/bin/registry start
 ExecStop={{ hwregistry_home }}/bin/registry stop

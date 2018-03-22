@@ -55,9 +55,6 @@
     mode: 0775
   notify: restart hwregistry
 
-# modify registry startup script to not use su -u -c because it prompts for password
-
-
 # setup database
 - name: Create postgres hwregistry user
   postgresql_user:
