@@ -7,8 +7,8 @@ nifi_user: nifi
 # installation locations
 nifi_base_dir: /opt/nifi
 nifi_data_dir: /opt/nifi_data
-nifi_etc_dir: /opt/nifi/etc
-nifi_log_dir: /opt/nifi/log/nifi
+nifi_etc_dir: "{{ nifi_data_dir }}/etc"
+nifi_log_dir: "{{ nifi_data_dir }}/log"
 nifi_pid_dir: /var/run/nifi
 
 
