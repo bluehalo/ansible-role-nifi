@@ -35,6 +35,9 @@ nifi_provenance_repositories: [ "{{ nifi_home }}/provenance_repository" ]
 # Web properties
 nifi_input_socket_host:
 nifi_web_http_port: 8080
+nifi_web_max_header_size: '16 KB'
+nifi_web_proxy_context_path:
+nifi_web_proxy_host:
 
 # NiFi cluster settings
 nifi_single_node: True
