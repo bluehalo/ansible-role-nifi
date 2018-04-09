@@ -20,7 +20,7 @@ nifi_perform_restart: True
 nifi_force_restart: False
 
 # A complete list of IP addresses for each nodes within the nifi cluster
-nifi_authorized_nodes_list: "{{ nifi_ips }}"
+nifi_authorized_nodes_list: "{{ nifi_hosts }}"
 
 # extra arg that are useful in expression languages
 nifi_extra_args: []
@@ -90,7 +90,7 @@ nifi_zookeeper_autopurge_purgeInterval: 24
 nifi_zookeeper_autopurge_snapRetainCount: 30
 
 # Security settings
-nifi_initial_admin: "CN=take,OU=NIFI"
+nifi_initial_admin: 'sherpa'  #"CN=sherpa, OU=NIFI"
 nifi_is_secure: True
 nifi_web_https_port: 8443
 nifi_security_keystore: "{{ nifi_etc_dir }}/keystore.jks"
@@ -104,6 +104,7 @@ nifi_tls_port: 9999
 nifi_need_client_auth: 'false'
 nifi_web_proxy_host_list: ''
 nifi_web_proxy_context_path: ''
+nifi_security_user_login_identity_provider: 'file-identity-provider'
 
 # Logback logging levels and settings
 nifi_log_app_file_retention: 10

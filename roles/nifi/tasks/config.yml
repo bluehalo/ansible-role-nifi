@@ -28,6 +28,8 @@
     - { src: "{{ nifi_major_version }}/login-identity-providers.xml.j2", dest: "{{nifi_conf_dir}}/login-identity-providers.xml" }
     - { src: "{{ nifi_major_version }}/state-management.xml.j2", dest: "{{nifi_conf_dir}}/state-management.xml" }
     - { src: "{{ nifi_major_version }}/zookeeper.properties.j2", dest: "{{nifi_conf_dir}}/zookeeper.properties" }
+    - { src: "login-credentials.xml", dest: "{{nifi_conf_dir}}/login-credentials.xml" }
+
   notify:
     - restart nifi
   tags: [ config ]

@@ -41,6 +41,14 @@
     remote_src: yes
     creates: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}/bin/tls-toolkit.sh"
 
+- name: Download NiFi simple file-auth
+  get_url:
+    url: "https://big.sherpaconsulting.no/downloads/nifi-file-identity-provider-nar-1.0.0.nar"
+    dest: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}/lib"
+    mode: "0660"
+    owner: nifi
+    group: nifi
+
 - name: Ensure nifi-toolkit symlink
   file:
     src: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}"
