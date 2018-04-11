@@ -23,6 +23,8 @@ nifi_extra_args: []
 # List of directories for nifi to look in for additional nars.
 nifi_custom_nars: []
 
+nifi_flowcontroller_graceful_shutdown_period: '10 sec'
+
 nifi_node_jvm_memory: '1024m'
 nifi_java_command: 'java'
 
