@@ -87,6 +87,36 @@
     chdir: "{{ nifi_etc_dir }}"
     creates: "{{ nifi_etc_dir }}/nifi-cert.pem"
 
+#### set the same key trust pass for all nodes
+- name: Get keystore pass
+  script: pull-keystore-pass.sh {{ nifi_data_dir }}/etc/config.json keyStorePassword
+  register: keystore
+
+
+- name: Get truststore pass
+  script: pull-keystore-pass.sh {{ nifi_data_dir }}/etc/config.json trustStorePassword
+  register: truststore
+
+- name: set passwords
+  vars:
+    keystorepass: "{{ keystore.stdout_lines[0] }}"
+    truststorepass: "{{ truststore.stdout_lines[0] }}"
+  script: set-new-key-trust-pass.sh {{ nifi_key_alias }} {{ nifi_data_dir }}/etc/keystore.jks {{ keystorepass }} {{ nifi_global_key_password }} {{ keystorepass }} {{ nifi_global_keystore_password }} {{ truststorepass }} {{ nifi_global_truststore_password }} {{ nifi_data_dir }}/etc/truststore.jks
+  when:
+    - keystorepass != nifi_global_keystore_password
+    - truststorepass != nifi_global_truststore_password
+
+- name: update config.json
+  #when:
+  #  - keystorepass != nifi_global_keystore_password
+  #  - truststorepass != nifi_global_truststore_password
+  template:
+    src: config.json
+    dest: "{{ nifi_data_dir }}/etc/config.json"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: '0644'
+####
 
 - name: Ensure nifi symlink
   file:

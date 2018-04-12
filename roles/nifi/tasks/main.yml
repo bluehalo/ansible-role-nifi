@@ -1,4 +1,4 @@
 ---
+- include_vars: "{{ vault_file_path }}"
 - include: install.yml
 - include: config.yml
-- include: pull_latest_flow.yml
