@@ -11,7 +11,17 @@ nifi_etc_dir: "{{ nifi_data_dir }}/etc"
 nifi_log_dir: "{{ nifi_data_dir }}/log"
 nifi_pid_dir: /var/run/nifi
 
+# vars file for nifi
+nifi_service: /etc/systemd/system/nifi.service
+nifi_toolkit_service: /etc/systemd/system/nifi-toolkit.service
 
+nifi_home: "{{ nifi_base_dir }}/nifi-current"
+nifi_toolkit_home: "{{ nifi_base_dir }}/nifi-toolkit-current"
+nifi_conf_dir: "{{ nifi_home }}/conf"
+nifi_nar_dir: "{{ nifi_home }}/lib"
+nifi_work_dir: "{{ nifi_home }}/work"
+nifi_pid_file: "{{ nifi_pid_dir }}/nifi.pid"
+nifi_toolkit_pid_file: "{{ nifi_pid_dir }}/nifi-toolkit.pid"
 
 # whether to restart nifi after making changes; default is True, for a cluster you may wish to disable
 nifi_perform_restart: True
@@ -90,16 +100,17 @@ nifi_zookeeper_autopurge_purgeInterval: 24
 nifi_zookeeper_autopurge_snapRetainCount: 30
 
 # Security settings
+nifi_key_alias: 'nifi-key'
 nifi_initial_admin: 'sherpa'  #"CN=sherpa, OU=NIFI"
 nifi_is_secure: True
 nifi_web_https_port: 8443
 nifi_security_keystore: "{{ nifi_etc_dir }}/keystore.jks"
 nifi_security_keystoreType: jks
-nifi_security_keystorePasswd: "{{ nifi_key_store_password }}"
-nifi_security_keyPasswd: "{{ nifi_security_keystorePasswd }}"
+nifi_security_keystorePasswd: "{{ nifi_global_keystore_password }}"
+nifi_security_keyPasswd: "{{ nifi_global_key_password }}"
 nifi_security_truststore: "{{ nifi_etc_dir }}/truststore.jks"
 nifi_security_truststoreType: jks
-nifi_security_truststorePasswd: "{{ nifi_trust_store_password }}"
+nifi_security_truststorePasswd: "{{ nifi_global_truststore_password }}"
 nifi_tls_port: 9999
 nifi_need_client_auth: 'false'
 nifi_web_proxy_host_list: ''
@@ -131,3 +142,6 @@ nifi_custom_log_levels: []
 
 # Extra Properties
 nifi_variable_registry_properties: [ "{{ nifi_conf_dir }}/extra-args.properties" ]
+
+# Web UI refresh
+nifi_ui_autorefresh_interval: '5 sec'

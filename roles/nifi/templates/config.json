@@ -1,0 +1,21 @@
+{
+  "days" : 1095,
+  "keySize" : 2048,
+  "keyPairAlgorithm" : "RSA",
+  "signingAlgorithm" : "SHA256WITHRSA",
+  "dn" : "CN={{ nifi_this_host }},OU=NIFI",
+  "domainAlternativeNames" : null,
+  "keyStore" : "keystore.jks",
+  "keyStoreType" : "jks",
+  "keyStorePassword" : "{{ nifi_global_keystore_password }}",
+  "keyPassword" : "{{ nifi_global_key_password }}",
+  "token" : "{{ nifi_toolkit_token }}",
+  "caHostname" : "{{ nifi_tls_server }}",
+  "port" : 9999,
+  "dnPrefix" : "CN=",
+  "dnSuffix" : ", OU=NIFI",
+  "reorderDn" : true,
+  "trustStore" : "truststore.jks",
+  "trustStorePassword" : "{{ nifi_global_truststore_password }}",
+  "trustStoreType" : "jks"
+}

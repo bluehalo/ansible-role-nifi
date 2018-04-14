@@ -1,15 +1,5 @@
 ---
-# TODO: this always restarts nifi... fix
-- name: Register config.json for private keys
-  shell: cat {{ nifi_etc_dir }}/config.json | grep Password
-  register: config_result
-
 - name: copy nifi configs
-  vars:
-    conf_passwds: "{{ config_result.stdout_lines }}"
-    nifi_key_store_password: "{{ conf_passwds[0].split(':')[1][2:-2] }}"
-    nifi_trust_store_password: "{{ conf_passwds[2].split(':')[1][2:-2] }}"
-
   template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
   with_items:
     - { src: "{{ nifi_major_version }}/nifi.properties.j2", dest: "{{nifi_conf_dir}}/nifi.properties" }

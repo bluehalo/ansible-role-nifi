@@ -32,7 +32,7 @@ nifi.authorizer.configuration.file={{ nifi_conf_dir }}/authorizers.xml
 nifi.login.identity.provider.configuration.file={{ nifi_conf_dir }}/login-identity-providers.xml
 nifi.templates.directory={{ nifi_etc_dir }}/templates
 nifi.ui.banner.text=
-nifi.ui.autorefresh.interval=30 sec
+nifi.ui.autorefresh.interval={{ nifi_ui_autorefresh_interval }}
 nifi.nar.library.directory={{ nifi_nar_dir }}
 {% for custom_nar in nifi_custom_nars -%}
 nifi.nar.library.directory.lib{{ loop.index }}={{ custom_nar }}
