@@ -1,0 +1,8 @@
+- name: Install HW Registry
+  hosts: docker_utility
+  vars:
+    vault_file_path: ~/repos/ansible-inventory/DSB/encrypted/babelfisk.yml
+
+  roles:
+    - role: ../../../ansible-role-nifi/roles/hw-registry
+      hwregistry_pgsql_host: "{{ hostvars['docker1']['ip'] }}"
