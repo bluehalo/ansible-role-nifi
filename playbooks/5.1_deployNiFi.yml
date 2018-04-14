@@ -8,7 +8,7 @@
       vault_file_path: ~/repos/ansible-inventory/DSB/encrypted/babelfisk.yml
 
   roles:
-    - role: ../../../ansible-role-nifi/roles/nifi
+    - role: nifi
       nifi_version: 1.6.0
       nifi_is_secure: True
       nifi_tls_token: "thisIsATokenToPreventMITM"

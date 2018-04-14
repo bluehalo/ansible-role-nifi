@@ -2,6 +2,6 @@
   hosts: nifi_registry
 
   roles:
-    - role: ../../../ansible-role-nifi/roles/nifi-registry
+    - role: nifi-registry
       nifi_this_host: "{{ host }}.{{ domain }}.{{ docker_network_name }}"
       nifi_java_home: '/usr/java/jdk1.8.0_144'
