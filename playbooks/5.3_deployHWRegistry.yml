@@ -4,5 +4,5 @@
     vault_file_path: ~/repos/ansible-inventory/DSB/encrypted/babelfisk.yml
 
   roles:
-    - role: hw-registry
+    - role: ../roles/hw-registry
       hwregistry_pgsql_host: "{{ hostvars['docker1']['ip'] }}"
