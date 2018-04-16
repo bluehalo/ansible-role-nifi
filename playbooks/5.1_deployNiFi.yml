@@ -2,7 +2,7 @@
   hosts: docker_nifi
   vars:
       nifi_log_level_root: WARN
-      nifi_node_jvm_memory: '1024m'
+      nifi_node_jvm_memory: '2024m'
       nifi_single_node: True
       nifi_proxy_host: "{{ hostvars['test_server']['host'] }}.{{ hostvars['test_server']['domain'] }}" # due to proxy issues
       vault_file_path: ~/repos/ansible-inventory/DSB/encrypted/babelfisk.yml
