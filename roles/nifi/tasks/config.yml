@@ -6,7 +6,7 @@
     - { src: 'extra-args.properties.j2', dest: "{{nifi_conf_dir}}/extra-args.properties" }
   notify:
     - restart nifi
-  tags: [ deploy, prop, props ]
+  tags: [ config ]
 
 - name: copy nifi configs
   template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
@@ -29,6 +29,7 @@
   with_items:
     - { src: "{{ nifi_major_version }}/nifi.sh.j2", dest: "{{ nifi_home }}/bin/nifi.sh" }
     - { src: "{{ nifi_major_version }}/nifi-env.sh.j2", dest: "{{ nifi_home }}/bin/nifi-env.sh" }
+  tags: [ config ]
 
 - name: Ensure NiFi is running
   service: name=nifi state=started enabled=yes

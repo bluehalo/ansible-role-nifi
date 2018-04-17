@@ -66,6 +66,7 @@
     group: nifi
     mode: 0600
   notify: restart nifi-toolkit
+  tags: [ config ]
 
 - name: Create nifi-toolkit systemd service
   when: inventory_hostname in groups['tls_server']
@@ -161,13 +162,13 @@
   file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
   with_items: "{{ nifi_provenance_repositories }}"
 
-- name: ensure zookeeper data directory exists
-  file: path="{{ nifi_zookeeper_dir }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
-  when: nifi_state_management_embedded_zookeeper_start
+#- name: ensure zookeeper data directory exists
+#  file: path="{{ nifi_zookeeper_dir }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
+#  when: nifi_state_management_embedded_zookeeper_start
 
-- name: add myid file for embedded zookeeper
-  template: src="myid.j2" dest="{{ nifi_zookeeper_dir }}/myid" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
-  when: nifi_state_management_embedded_zookeeper_start
+#- name: add myid file for embedded zookeeper
+#  template: src="myid.j2" dest="{{ nifi_zookeeper_dir }}/myid" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
+#  when: nifi_state_management_embedded_zookeeper_start
 
 - name: ensure nifi extra directories exist
   file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
