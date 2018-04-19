@@ -1,4 +1,6 @@
 ---
 - include_vars: "{{ vault_file_path }}"
+  tags: [config]
+
 - include: install.yml
 - include: config.yml

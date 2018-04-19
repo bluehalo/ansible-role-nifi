@@ -36,4 +36,5 @@
 
 - name: Ensure NiFi is restarted
   service: name=nifi state=restarted
+  tags: [config]
   when: nifi_force_restart
