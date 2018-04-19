@@ -82,6 +82,7 @@
 
 - meta: flush_handlers
 
+# TODO: make sure nifi is the owner of certs|
 - name: Setup nifi client sertificates
   command: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}/bin/tls-toolkit.sh client -c {{ nifi_tls_server }} -t {{ nifi_tls_token }} -p {{ nifi_tls_port }}"
   args:
