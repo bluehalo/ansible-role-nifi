@@ -84,6 +84,7 @@
 
 # TODO: make sure nifi is the owner of certs|
 - name: Setup nifi client sertificates
+  become_user: "{{ nifi_user }}"
   command: "{{ nifi_base_dir }}/nifi-toolkit-{{ nifi_version }}/bin/tls-toolkit.sh client -c {{ nifi_tls_server }} -t {{ nifi_tls_token }} -p {{ nifi_tls_port }}"
   args:
     chdir: "{{ nifi_etc_dir }}"
@@ -91,15 +92,18 @@
 
 #### set the same key trust pass for all nodes
 - name: Get keystore pass
+  become_user: "{{ nifi_user }}"
   script: pull-keystore-pass.sh {{ nifi_data_dir }}/etc/config.json keyStorePassword
   register: keystore
 
 
 - name: Get truststore pass
+  become_user: "{{ nifi_user }}"
   script: pull-keystore-pass.sh {{ nifi_data_dir }}/etc/config.json trustStorePassword
   register: truststore
 
 - name: set passwords
+  become_user: "{{ nifi_user }}"
   vars:
     keystorepass: "{{ keystore.stdout_lines[0] }}"
     truststorepass: "{{ truststore.stdout_lines[0] }}"
@@ -142,6 +146,7 @@
   file:
     path: "{{ item }}"
     state: directory
+    recurse: yes
     owner: "{{ nifi_user }}"
     group: "{{ nifi_user }}"
     mode: 0755
