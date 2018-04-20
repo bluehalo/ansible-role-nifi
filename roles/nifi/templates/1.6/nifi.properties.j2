@@ -114,7 +114,7 @@ nifi.provenance.repository.indexed.fields={{ nifi_provenance_indexed_fields }}
 nifi.provenance.repository.indexed.attributes=
 # Large values for the shard size will result in more Java heap usage when searching the Provenance Repository
 # but should provide better performance
-nifi.provenance.repository.index.shard.size=500 MB
+nifi.provenance.repository.index.shard.size=4 GB
 # Indicates the maximum length that a FlowFile attribute can be when retrieving a Provenance Event from
 # the repository. If the length of any attribute exceeds this value, it will be truncated when the event is retrieved.
 nifi.provenance.repository.max.attribute.length=65536
@@ -216,8 +216,8 @@ nifi.cluster.node.protocol.port={{ nifi_cluster_node_protocol_port }}
 nifi.cluster.node.protocol.threads=10
 nifi.cluster.node.protocol.max.threads=50
 nifi.cluster.node.event.history.size=25
-nifi.cluster.node.connection.timeout=5 sec
-nifi.cluster.node.read.timeout=5 sec
+nifi.cluster.node.connection.timeout=30 sec
+nifi.cluster.node.read.timeout=30 sec
 nifi.cluster.node.max.concurrent.requests=100
 nifi.cluster.firewall.file=
 nifi.cluster.flow.election.max.wait.time=5 mins
