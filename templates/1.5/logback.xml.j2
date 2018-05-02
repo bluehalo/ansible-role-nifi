@@ -18,7 +18,7 @@
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
     </contextListener>
-    
+
     <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${org.apache.nifi.bootstrap.config.log.dir}/nifi-app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -35,10 +35,11 @@
         </rollingPolicy>
         <immediateFlush>true</immediateFlush>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
-    
+
     <appender name="USER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${org.apache.nifi.bootstrap.config.log.dir}/nifi-user.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -53,6 +54,7 @@
             <maxHistory>{{ nifi_log_user_file_retention }}</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
@@ -71,24 +73,26 @@
             <maxHistory>5</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
-	
+
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
-    
+
     <!-- valid logging levels: TRACE, DEBUG, INFO, WARN, ERROR -->
-    
+
     <logger name="org.apache.nifi" level="{{ nifi_log_level_org_apache_nifi }}"/>
     <logger name="org.apache.nifi.processors" level="{{ nifi_log_level_org_apache_nifi_processors }}"/>
     <logger name="org.apache.nifi.processors.standard.LogAttribute" level="{{ nifi_log_level_org_apache_nifi_processors_standard_LogAttribute }}"/>
     <logger name="org.apache.nifi.controller.repository" level="{{ nifi_log_level_org_apache_nifi_controller_repository }}" />
     <logger name="org.apache.nifi.controller.repository.StandardProcessSession" level="{{ nifi_log_level_org_apache_nifi_controller_repository_StandardProcessSession }}" />
-    
+
     <logger name="org.wali" level="{{ nifi_log_level_org_wali }}" />
 
     <logger name="org.apache.zookeeper.ClientCnxn" level="ERROR" />
@@ -102,7 +106,7 @@
 
     <logger name="org.apache.curator.framework.recipes.leader.LeaderSelector" level="OFF" />
     <logger name="org.apache.curator.ConnectionState" level="OFF" />
-    
+
     <!-- Logger for managing logging statements for nifi clusters. -->
     <logger name="org.apache.nifi.cluster" level="{{ nifi_log_level_org_apache_nifi_cluster }}"/>
 
@@ -116,7 +120,7 @@
     <logger name="com.sun.jersey.spi.container.servlet.WebComponent" level="ERROR"/>
     <logger name="com.sun.jersey.spi.spring" level="ERROR"/>
     <logger name="org.springframework" level="ERROR"/>
-    
+
     <!-- Suppress non-error messages due to known warning about redundant path annotation (NIFI-574) -->
     <logger name="com.sun.jersey.spi.inject.Errors" level="ERROR"/>
     <logger name="org.glassfish.jersey.internal.Errors" level="ERROR"/>
@@ -144,7 +148,7 @@
 
 
     <!--
-        Logger for capturing Bootstrap logs and NiFi's standard error and standard out. 
+        Logger for capturing Bootstrap logs and NiFi's standard error and standard out.
     -->
     <logger name="org.apache.nifi.bootstrap" level="{{ nifi_log_level_org_apache_nifi_bootstrap }}" additivity="false">
         <appender-ref ref="BOOTSTRAP_FILE" />
@@ -158,7 +162,7 @@
     <logger name="org.apache.nifi.StdOut" level="INFO" additivity="false">
         <appender-ref ref="BOOTSTRAP_FILE" />
     </logger>
-    
+
     <!-- Everything written to NiFi's Standard Error will be logged with the logger org.apache.nifi.StdErr at ERROR level -->
     <logger name="org.apache.nifi.StdErr" level="ERROR" additivity="false">
         <appender-ref ref="BOOTSTRAP_FILE" />
@@ -173,5 +177,5 @@
     <root level="{{ nifi_log_level_root }}">
         <appender-ref ref="APP_FILE"/>
     </root>
-    
+
 </configuration>

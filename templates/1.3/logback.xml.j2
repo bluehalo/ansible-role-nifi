@@ -35,6 +35,7 @@
         </rollingPolicy>
         <immediateFlush>true</immediateFlush>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
@@ -53,6 +54,7 @@
             <maxHistory>{{ nifi_log_user_file_retention }}</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
@@ -71,12 +73,14 @@
             <maxHistory>{{ nifi_log_boot_file_retention }}</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
             <pattern>%date %level [%thread] %logger{40} %msg%n</pattern>
         </encoder>
     </appender>
@@ -143,7 +147,7 @@
 
 
     <!--
-        Logger for capturing Bootstrap logs and NiFi's standard error and standard out. 
+        Logger for capturing Bootstrap logs and NiFi's standard error and standard out.
     -->
     <logger name="org.apache.nifi.bootstrap" level="{{ nifi_log_level_org_apache_nifi_bootstrap }}" additivity="false">
         <appender-ref ref="BOOTSTRAP_FILE" />
