@@ -27,6 +27,7 @@ nifi_flowcontroller_graceful_shutdown_period: '10 sec'
 
 nifi_node_jvm_memory: '1024m'
 nifi_java_command: 'java'
+nifi_default_character_encoding: 'UTF-8'
 
 # defaults file / directories for nifi
 nifi_database_repository: "{{ nifi_home }}/database_repository"

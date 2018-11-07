@@ -81,4 +81,4 @@ notification.max.attempts=5
 #nifi.dead.notification.services=email-notification
 
 # Set default character encoding to UTF-8
-java.arg.100=-Dfile.encoding=UTF-8
+java.arg.100=-Dfile.encoding={{ nifi_default_character_encoding | UTF-8 }}
