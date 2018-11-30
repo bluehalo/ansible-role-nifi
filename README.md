@@ -1,8 +1,8 @@
 nifi
 ====
 
-Use this role to install, configure, and manage Apache NiFi.
-Role has been tested with NiFi versions 1.1.x, 1.2.0, 1.3.0 and 1.4.0.
+Use this role to configure Apache NiFi.
+Role has been tested with NiFi versions 1.3.x, 1.4.x, 1.5.x, 1.6.x, 1.7.x, and 1.8.x.
 
 Requirements
 ------------
