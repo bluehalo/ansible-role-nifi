@@ -153,11 +153,11 @@ Install and configure NiFi
       pre_tasks:
         - name: Upload NiFi distribution (tar.gz) from localhost
           copy:
-            src: nifi-1.2.0-bin.tar.gz
+            src: nifi-1.8.0-bin.tar.gz
             dest: /opt/nifi
         - name: Unarchive NiFi distribution
           unarchive:
-            src: /opt/nifi/nifi-1.2.0-bin.tar.gz
+            src: /opt/nifi/nifi-1.8.0-bin.tar.gz
             dest: /opt/nifi
             copy: no
       roles:
