@@ -162,7 +162,7 @@ Install and configure NiFi
             copy: no
       roles:
         - role: nifi
-          nifi_version: 1.2.0
+          nifi_version: 1.8.0
 
 License
 -------
