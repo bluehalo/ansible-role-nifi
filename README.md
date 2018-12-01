@@ -1,8 +1,8 @@
 nifi
 ====
 
-Use this role to install, configure, and manage Apache NiFi.
-Role has been tested with NiFi versions 1.1.x, 1.2.0, 1.3.0 and 1.4.0.
+Use this role to configure Apache NiFi.
+Role has been tested with NiFi versions 1.3.x, 1.4.x, 1.5.x, 1.6.x, 1.7.x, and 1.8.x.
 
 Requirements
 ------------
@@ -153,16 +153,16 @@ Install and configure NiFi
       pre_tasks:
         - name: Upload NiFi distribution (tar.gz) from localhost
           copy:
-            src: nifi-1.2.0-bin.tar.gz
+            src: nifi-1.8.0-bin.tar.gz
             dest: /opt/nifi
         - name: Unarchive NiFi distribution
           unarchive:
-            src: /opt/nifi/nifi-1.2.0-bin.tar.gz
+            src: /opt/nifi/nifi-1.8.0-bin.tar.gz
             dest: /opt/nifi
             copy: no
       roles:
         - role: nifi
-          nifi_version: 1.2.0
+          nifi_version: 1.8.0
 
 License
 -------
