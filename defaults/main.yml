@@ -38,6 +38,7 @@ nifi_input_socket_port:
 nifi_cluster_node_protocol_port:
 nifi_web_http_port: 8080
 nifi_web_https_port: 8443
+nifi_web_proxy_host: nifi.local
 
 # Queue swap settings
 nifi_queue_swap_threshold: 20000
