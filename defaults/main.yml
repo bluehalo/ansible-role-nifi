@@ -23,6 +23,9 @@ nifi_extra_args: []
 # List of directories for nifi to look in for additional nars.
 nifi_custom_nars: []
 
+# Watched directory watched for new NARs
+nifi_nar_library_autoload_directory: './extensions'
+
 nifi_flowcontroller_graceful_shutdown_period: '10 sec'
 
 nifi_node_jvm_memory: '1024m'
