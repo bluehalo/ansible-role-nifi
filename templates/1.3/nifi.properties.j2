@@ -22,7 +22,7 @@ nifi.flow.configuration.archive.max.time=30 days
 nifi.flow.configuration.archive.max.storage=500 MB
 nifi.flow.configuration.archive.max.count=
 nifi.flowcontroller.autoResumeState=true
-nifi.flowcontroller.graceful.shutdown.period=10 sec
+nifi.flowcontroller.graceful.shutdown.period={{ nifi_graceful_shutdown_secs }} secs
 nifi.flowservice.writedelay.interval=500 ms
 nifi.administrative.yield.duration=30 sec
 # If a component has no work to do (is "bored"), how long should we wait before checking again for work?
