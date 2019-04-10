@@ -29,6 +29,12 @@
     - "{{ nifi_database_repository }}"
     - "{{ nifi_flowfile_repository }}"
 
+- name: Create dir extensions when nifi >= 1.9
+  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
+  with_items:
+    - "{{ nifi_extensions_dir }}"
+  when: nifi_version >= 1.9
+
 - name: ensure nifi content repo directories exist
   file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
   with_items: "{{ nifi_content_repositories }}"
