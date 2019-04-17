@@ -27,6 +27,9 @@ Role Variables
     
 ### Other Default variables are listed below:
 
+    # enable to specify -Djava.io.tmpdir in bootstrap.conf
+    #nifi_tmpdir: /tmp
+
     # whether to restart nifi after making changes; default is True, for a cluster you may wish to disable
     nifi_perform_restart: True
 
