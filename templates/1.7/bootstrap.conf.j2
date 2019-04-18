@@ -26,7 +26,7 @@ lib.dir={{ nifi_nar_dir }}
 conf.dir={{ nifi_conf_dir }}
 
 # How long to wait after telling NiFi to shutdown before explicitly killing the Process
-graceful.shutdown.seconds={{ nifi_flowcontroller_graceful_shutdown_period }}
+graceful.shutdown.seconds={{ nifi_graceful_shutdown_secs }}
 
 # Disable JSR 199 so that we can use JSP's without running a JDK
 java.arg.1=-Dorg.apache.jasper.compiler.disablejsr199=true
