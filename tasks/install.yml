@@ -34,10 +34,10 @@
     - "{{ nifi_database_repository }}"
     - "{{ nifi_flowfile_repository }}"
 
-- name: Ensure nifi tmpdir exists
-  file: path="{{ nifi_tmpdir }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
+- name: Ensure nifi tmp_dir exists
+  file: path="{{ nifi_tmp_dir }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
   when:
-    - nifi_tmpdir is defined
+    - nifi_tmp_dir is defined
 
 - name: ensure nifi content repo directories exist
   file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
