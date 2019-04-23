@@ -28,8 +28,8 @@
     - { src: "{{ nifi_major_version }}/nifi.sh.j2", dest: "{{ nifi_home }}/bin/nifi.sh" }
     - { src: "{{ nifi_major_version }}/nifi-env.sh.j2", dest: "{{ nifi_home }}/bin/nifi-env.sh" }
 
-- name: Ensure NiFi is running
-  service: name=nifi state=started enabled=yes
+- name: Ensure NiFi service starts on reboot
+  service: name=nifi enabled=yes
 
 - name: Ensure NiFi is restarted
   service: name=nifi state=restarted
