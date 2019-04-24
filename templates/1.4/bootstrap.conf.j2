@@ -26,7 +26,7 @@ lib.dir={{ nifi_nar_dir }}
 conf.dir={{ nifi_conf_dir }}
 
 # How long to wait after telling NiFi to shutdown before explicitly killing the Process
-graceful.shutdown.seconds={{ nifi_flowcontroller_graceful_shutdown_period }}
+graceful.shutdown.seconds={{ nifi_graceful_shutdown_secs }}
 
 # Disable JSR 199 so that we can use JSP's without running a JDK
 java.arg.1=-Dorg.apache.jasper.compiler.disablejsr199=true
@@ -57,6 +57,12 @@ nifi.bootstrap.sensitive.key=
 # Sets the provider of SecureRandom to /dev/urandom to prevent blocking on VMs
 java.arg.15=-Djava.security.egd=file:/dev/urandom
 
+{% if nifi_tmp_dir is defined %}
+# Specify java.io.tmpdir to workaround
+# http://apache-nifi-users-list.2361937.n4.nabble.com/nifi-hive-nar-1-7-1-nar-will-not-load-td5337.html
+java.arg.tmpdir=-Djava.io.tmpdir={{ nifi_tmp_dir }}
+
+{% endif %}
 ###
 # Notification Services for notifying interested parties when NiFi is stopped, started, dies
 ###
