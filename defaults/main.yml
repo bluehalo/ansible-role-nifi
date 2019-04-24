@@ -8,6 +8,9 @@ nifi_etc_dir: /etc/nifi
 nifi_log_dir: /var/log/nifi
 nifi_pid_dir: /var/run/nifi
 
+# specify -Djava.io.tmpdir in bootstrap.conf, default is unspecified
+#nifi_tmp_dir: /tmp
+
 # whether to restart nifi after making changes; default is True, for a cluster you may wish to disable
 nifi_perform_restart: True
 
