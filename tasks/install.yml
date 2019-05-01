@@ -48,7 +48,10 @@
   with_items: "{{ nifi_provenance_repositories }}"
 
 - name: ensure zookeeper data directory exists
-  file: path="{{ nifi_zookeeper_dir }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
+  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
+  with_items:
+    - "{{ nifi_zookeeper_dir }}"
+    - "{{ nifi_zookeeper_dir }}/version-2"
   when: nifi_state_management_embedded_zookeeper_start
 
 - name: add myid file for embedded zookeeper
