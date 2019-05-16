@@ -37,9 +37,9 @@ java.arg.3=-Xmx{{ nifi_node_jvm_memory }}
 
 # Enable Remote Debugging
 {% if nifi_enable_remote_debugging -%}
-java.arg.debug=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+java.arg.debug=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address={{ nifi_remote_debugging_port }}
 {% else -%}
-#java.arg.debug=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=8000
+#java.arg.debug=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address={{ nifi_remote_debugging_port }}
 {% endif -%}
 
 java.arg.4=-Djava.net.preferIPv4Stack=true
