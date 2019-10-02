@@ -31,6 +31,7 @@
     - "{{ nifi_nar_dir }}"
     - "{{ nifi_work_dir }}"
     - "{{ nifi_etc_dir }}"
+    - "{{ nifi_nar_library_autoload_directory }}"
     - "{{ nifi_database_repository }}"
     - "{{ nifi_flowfile_repository }}"
 
