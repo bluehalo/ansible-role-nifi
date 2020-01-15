@@ -65,6 +65,12 @@ java.arg.15=-Djava.security.egd=file:/dev/urandom
 # Please see https://docs.oracle.com/javase/8/docs/technotes/guides/security/jgss/single-signon.html, section "EXCEPTIONS TO THE MODEL"
 java.arg.16=-Djavax.security.auth.useSubjectCredsOnly=true
 
+{% if nifi_tmp_dir is defined %}
+# Specify java.io.tmpdir to workaround
+# http://apache-nifi-users-list.2361937.n4.nabble.com/nifi-hive-nar-1-7-1-nar-will-not-load-td5337.html
+java.arg.tmpdir=-Djava.io.tmpdir={{ nifi_tmp_dir }}
+
+{% endif %}
 ###
 # Notification Services for notifying interested parties when NiFi is stopped, started, dies
 ###
