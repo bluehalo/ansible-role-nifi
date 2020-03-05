@@ -11,6 +11,10 @@ nifi_pid_dir: /var/run/nifi
 # specify -Djava.io.tmpdir in bootstrap.conf, default is unspecified
 #nifi_tmp_dir: /tmp
 
+# Set this to true to enable remote debugging
+nifi_enable_remote_debugging: False
+nifi_remote_debugging_port: 8000
+
 # whether to restart nifi after making changes; default is True, for a cluster you may wish to disable
 nifi_perform_restart: True
 
@@ -27,7 +31,7 @@ nifi_extra_args: []
 nifi_custom_nars: []
 
 # Watched directory watched for new NARs
-nifi_nar_library_autoload_directory: './extensions'
+nifi_nar_library_autoload_directory: "{{ nifi_home }}/extensions"
 
 nifi_graceful_shutdown_secs: '20'
 
@@ -125,6 +129,7 @@ nifi_log_level_org_apache_nifi_cluster_authorization: INFO
 nifi_log_level_org_apache_nifi_bootstrap: INFO
 nifi_log_level_org_apache_nifi_bootstrap_Command: INFO
 nifi_log_level_org_apache_nifi_web_filter_RequestLogger: INFO
+nifi_log_level_org_apache_nifi_web_api_AccessResource: INFO
 nifi_log_level_org_wali: WARN
 nifi_custom_log_levels: []
 
