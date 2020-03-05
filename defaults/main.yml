@@ -31,7 +31,7 @@ nifi_extra_args: []
 nifi_custom_nars: []
 
 # Watched directory watched for new NARs
-nifi_nar_library_autoload_directory: './extensions'
+nifi_nar_library_autoload_directory: "{{ nifi_home }}/extensions"
 
 nifi_graceful_shutdown_secs: '20'
 
