@@ -1,6 +1,13 @@
 ---
-# tasks file for nifi
+- name: ensure nifi group exists
+  group: name="{{ nifi_user }}"
+  tags: [ user ]
 
+- name: ensure nifi user exists
+  user: name="{{ nifi_user }}" group="{{ nifi_user }}" shell="/bin/bash" home="/home/nifi"
+  tags: [ user ]
+
+# tasks file for nifi
 - name: Ensure nifi files are world-readable
   file: path="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" state=directory mode="a+rX" recurse=yes
 
@@ -25,6 +32,7 @@
 - name: Ensure nifi-required directories exist and are world-readable
   file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
   with_items:
+    - "{{ nifi_bin_dir }}"
     - "{{ nifi_conf_dir }}"
     - "{{ nifi_log_dir }}"
     - "{{ nifi_pid_dir }}"
