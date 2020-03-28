@@ -3,3 +3,4 @@
 - include: config.yml
 - include: certificate.yml
   when: nifi_authorizers_ldap_enabled
+- include: tunning.yml
