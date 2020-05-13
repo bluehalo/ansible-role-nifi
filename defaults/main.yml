@@ -22,7 +22,7 @@ nifi_extra_args: []
 # List of directories for nifi to look in for additional nars.
 nifi_custom_nars: []
 
-nifi_node_jvm_memory: '1024m'
+nifi_node_jvm_memory: "{{ (ansible_memtotal_mb * 0.7)|int|abs }}m"
 nifi_java_command: 'java'
 
 # defaults file / directories for nifi

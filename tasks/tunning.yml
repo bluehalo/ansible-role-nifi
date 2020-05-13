@@ -1,0 +1,22 @@
+---
+
+# Set vm.swappiness to 0 in /etc/sysctl.conf
+- sysctl:
+    name: vm.swappiness
+    value: '0'
+    state: present
+    reload: yes
+
+# Increase the number of TCP socket ports available
+- sysctl:
+    name: net.ipv4.ip_local_port_range
+    value: '10000 50000'
+    state: present
+    reload: yes
+
+# Set how long sockets stay in a TIMED_WAIT state when closed
+- sysctl:
+    name: net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait
+    value: '1'
+    state: present
+    reload: yes
