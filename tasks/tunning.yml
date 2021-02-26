@@ -15,8 +15,8 @@
     reload: yes
 
 # Set how long sockets stay in a TIMED_WAIT state when closed
-- sysctl:
-    name: net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait
-    value: '1'
-    state: present
-    reload: yes
+#- sysctl:
+#    name: net.ipv4.netfilter.ip_conntrack_tcp_timeout_time_wait
+#    value: '1'
+#   state: present
+#    reload: yes
