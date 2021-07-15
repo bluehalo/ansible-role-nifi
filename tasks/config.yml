@@ -4,8 +4,8 @@
   with_items:
     - { src: "{{ nifi_major_version }}/nifi.properties.j2", dest: "{{ nifi_conf_dir }}/nifi.properties" }
     - { src: 'extra-args.properties.j2', dest: "{{ nifi_conf_dir }}/extra-args.properties" }
-  notify:
-    - restart nifi
+  # notify:
+    # - restart nifi
   tags: [ deploy, prop, props ]
 
 - name: copy nifi configs
@@ -18,8 +18,8 @@
     - { src: "{{ nifi_major_version }}/login-identity-providers.xml.j2", dest: "{{ nifi_conf_dir }}/login-identity-providers.xml" }
     - { src: "{{ nifi_major_version }}/state-management.xml.j2", dest: "{{ nifi_conf_dir }}/state-management.xml" }
     - { src: "{{ nifi_major_version }}/zookeeper.properties.j2", dest: "{{ nifi_conf_dir }}/zookeeper.properties" }
-  notify:
-    - restart nifi
+  # notify:
+    # - restart nifi
   tags: [ config ]
 
 - name: copy nifi scripts
@@ -27,10 +27,11 @@
   with_items:
     - { src: "{{ nifi_major_version }}/nifi.sh.j2", dest: "{{ nifi_home }}/bin/nifi.sh" }
     - { src: "{{ nifi_major_version }}/nifi-env.sh.j2", dest: "{{ nifi_home }}/bin/nifi-env.sh" }
+  tags: [ scripts ]
 
 - name: Ensure NiFi service starts on reboot
   service: name=nifi enabled=yes
 
-- name: Ensure NiFi is restarted
-  service: name=nifi state=restarted
-  when: nifi_force_restart
+# - name: Ensure NiFi is restarted
+#   service: name=nifi state=restarted
+#   when: nifi_force_restart

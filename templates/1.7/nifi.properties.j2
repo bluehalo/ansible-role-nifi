@@ -51,7 +51,7 @@ nifi.state.management.provider.local=local-provider
 # The ID of the cluster-wide state provider. This will be ignored if NiFi is not clustered but must be populated if running in a cluster.
 nifi.state.management.provider.cluster=zk-provider
 # Specifies whether or not this instance of NiFi should run an embedded ZooKeeper server
-{% set is_zk_node = nifi_zookeeper_servers | intersect([ec2_private_ip_address]) | length > 0 -%}
+{% set is_zk_node = nifi_zookeeper_servers | intersect([hostvars[inventory_hostname]['ansible_default_ipv4']['address']]) | length > 0 -%}
 {% set should_run_zk = nifi_state_management_embedded_zookeeper_start -%}
 nifi.state.management.embedded.zookeeper.start={{ (is_zk_node and should_run_zk) | lower }}
 # Properties file that provides the ZooKeeper properties to use if <nifi.state.management.embedded.zookeeper.start> is set to true
@@ -110,7 +110,7 @@ nifi.provenance.repository.index.threads={{ nifi_provenance_index_threads }}
 nifi.provenance.repository.compress.on.rollover=true
 nifi.provenance.repository.always.sync=false
 nifi.provenance.repository.journal.count=16
-# Comma-separated list of fields. Fields that are not indexed will not be searchable. Valid fields are: 
+# Comma-separated list of fields. Fields that are not indexed will not be searchable. Valid fields are:
 # EventType, FlowFileUUID, Filename, TransitURI, ProcessorID, AlternateIdentifierURI, Relationship, Details
 nifi.provenance.repository.indexed.fields={{ nifi_provenance_indexed_fields }}
 # FlowFile Attributes that should be indexed and made searchable.  Some examples to consider are filename, uuid, mime.type

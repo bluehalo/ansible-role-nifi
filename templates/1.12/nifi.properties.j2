@@ -52,7 +52,7 @@ nifi.state.management.provider.local=local-provider
 # The ID of the cluster-wide state provider. This will be ignored if NiFi is not clustered but must be populated if running in a cluster.
 nifi.state.management.provider.cluster=zk-provider
 # Specifies whether or not this instance of NiFi should run an embedded ZooKeeper server
-{% set is_zk_node = nifi_zookeeper_servers | intersect([ec2_private_ip_address]) | length > 0 -%}
+{% set is_zk_node = nifi_zookeeper_servers | intersect([hostvars[inventory_hostname]['ansible_default_ipv4']['address']]) | length > 0 -%}
 {% set should_run_zk = nifi_state_management_embedded_zookeeper_start -%}
 nifi.state.management.embedded.zookeeper.start={{ (is_zk_node and should_run_zk) | lower }}
 # Properties file that provides the ZooKeeper properties to use if <nifi.state.management.embedded.zookeeper.start> is set to true
@@ -137,9 +137,9 @@ nifi.components.status.snapshot.frequency={{ nifi_components_status_snapshot_fre
 
 # Site to Site properties
 nifi.remote.input.host={{ nifi_remote_input_host }}
-nifi.remote.input.secure={{ nifi_is_secure | lower }}
+nifi.remote.input.secure={{ nifi_remote_input_secure | lower }}
 nifi.remote.input.socket.port={{ nifi_remote_input_socket_port }}
-nifi.remote.input.http.enabled={{ (not nifi_is_secure) | lower }}
+nifi.remote.input.http.enabled={{ nifi_remote_input_http_enabled | lower }}
 nifi.remote.input.http.transaction.ttl=30 sec
 nifi.remote.contents.cache.expiration=30 secs
 
