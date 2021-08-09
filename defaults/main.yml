@@ -8,6 +8,9 @@ nifi_etc_dir: /etc/nifi
 nifi_log_dir: /var/log/nifi
 nifi_pid_dir: /var/run/nifi
 
+# shell environment preservation
+nifi_user_preserve_environment: false
+
 # specify -Djava.io.tmpdir in bootstrap.conf, default is unspecified
 #nifi_tmp_dir: /tmp
 

@@ -2,7 +2,7 @@ nifi
 ====
 
 Use this role to configure Apache NiFi.
-Role has been tested with NiFi versions 1.3.x, 1.4.x, 1.5.x, 1.6.x, 1.7.x, and 1.8.x.
+Role has been tested with NiFi versions 1.3.x, 1.4.x, 1.5.x, 1.6.x, 1.7.x, 1.8.x and 1.14.x.
 
 Requirements
 ------------
