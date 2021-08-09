@@ -10,3 +10,7 @@ nifi_conf_dir: "{{ nifi_home }}/conf"
 nifi_nar_dir: "{{ nifi_home }}/lib"
 nifi_work_dir: "{{ nifi_home }}/work"
 nifi_pid_file: "{{ nifi_pid_dir }}/nifi.pid"
+
+
+# In NiFIi 1.12 the options for nifi.sensitive.props.algorithm were changed. The default value has been updated in the defaults/main.yml to reflect the new default, but is over-ridden here for backwards compatibility.
+nifi_sensitive_props_algorithm: PBEWITHMD5AND256BITAES-CBC-OPENSSL

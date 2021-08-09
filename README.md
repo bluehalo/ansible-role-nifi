@@ -15,6 +15,8 @@ Prior to executing this role, the NiFi distribution must be accssible on the tar
 Role Variables
 --------------
 
+_NOTE_: The value for `nifi_sensitive_props_algorithm` in the role defaults is `NIFI_PBKDF2_AES_GCM_256` to align with the new (1.12+) default value in the NiFi install. In order to provide backward compatibility within this role, it is set to the previous default in the main variables for this role. For new deployments please use one of the newer options, documented at https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#nifi_sensitive_props_key.
+
 ### Required Variables
     nifi_version
 

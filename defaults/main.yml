@@ -8,6 +8,9 @@ nifi_etc_dir: /etc/nifi
 nifi_log_dir: /var/log/nifi
 nifi_pid_dir: /var/run/nifi
 
+# nifi user information
+nifi_user_home: /home/nifi
+
 # shell environment preservation
 nifi_user_preserve_environment: false
 
@@ -114,6 +117,7 @@ nifi_security_keyPasswd: "{{ nifi_security_keystorePasswd }}"
 nifi_security_truststore: "{{ nifi_conf_dir }}/truststore.jks"
 nifi_security_truststoreType: jks
 nifi_security_truststorePasswd: ''
+nifi_sensitive_props_algorithm: NIFI_PBKDF2_AES_GCM_256
 
 # Logback logging levels and settings
 nifi_log_app_file_retention: 10
