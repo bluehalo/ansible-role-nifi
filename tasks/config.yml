@@ -32,6 +32,3 @@
 - name: Ensure NiFi service starts on reboot
   service: name=nifi enabled=yes
 
-# - name: Ensure NiFi is restarted
-#   service: name=nifi state=restarted
-#   when: nifi_force_restart
