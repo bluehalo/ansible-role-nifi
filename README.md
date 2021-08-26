@@ -139,6 +139,29 @@ Role Variables
     nifi_log_level_org_wali: WARN
     nifi_custom_log_levels: []
 
+    # LDAP authentication settings
+    # (only used if nifi_security_user_login_identity_provider is set to "ldap-provider")
+    nifi_ldap_provider_authentication_strategy: START_TLS
+    nifi_ldap_provider_manager_dn:
+    nifi_ldap_provider_manager_password:
+    nifi_ldap_provider_tls_keystore:
+    nifi_ldap_provider_tls_keystore_password:
+    nifi_ldap_provider_tls_keystore_type:
+    nifi_ldap_provider_tls_truststore:
+    nifi_ldap_provider_tls_truststore_password:
+    nifi_ldap_provider_tls_truststore_type:
+    nifi_ldap_provider_tls_client_auth:
+    nifi_ldap_provider_tls_protocol:
+    nifi_ldap_provider_tls_shutdown_gracefully:
+    nifi_ldap_provider_referral_strategy: FOLLOW
+    nifi_ldap_provider_connect_timeout: 10 secs
+    nifi_ldap_provider_read_timeout: 10 secs
+    nifi_ldap_provider_url:
+    nifi_ldap_provider_user_search_base:
+    nifi_ldap_provider_user_search_filter:
+    nifi_ldap_provider_identity_strategy: USE_DN
+    nifi_ldap_provider_authentication_expiration: 12 hours
+
 Dependencies
 ------------
 

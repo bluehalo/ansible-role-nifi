@@ -189,7 +189,7 @@ nifi.security.truststorePasswd=
 {% endif -%}
 nifi.security.needClientAuth={{ nifi_need_client_auth | default('')}}
 nifi.security.user.authorizer=managed-authorizer
-nifi.security.user.login.identity.provider=
+nifi.security.user.login.identity.provider={{ nifi_security_user_login_identity_provider }}{{ nifi_security_user_login_identity_provider }}{{ nifi_security_user_login_identity_provider }}
 nifi.security.ocsp.responder.url=
 nifi.security.ocsp.responder.certificate=
 
