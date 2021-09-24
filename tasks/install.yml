@@ -4,7 +4,7 @@
   tags: [ user ]
 
 - name: ensure nifi user exists
-  user: name="{{ nifi_user }}" group="{{ nifi_user }}" shell="/bin/bash" home="/home/nifi"
+  user: name="{{ nifi_user }}" group="{{ nifi_user }}" shell="/sbin/nologin" create_home=false
   tags: [ user ]
 
 # tasks file for nifi
