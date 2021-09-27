@@ -24,8 +24,15 @@ Role Variables
     nifi_etc_dir: /etc/nifi
     nifi_log_dir: /var/log/nifi
     nifi_pid_dir: /var/run/nifi
+    nifi_home_dir: /home/nifi
     
 ### Other Default variables are listed below:
+
+    # Whether to create a home dir for the NiFi service user. Defaults to true to preserve prior functionality, but should be set to false for new instances.
+    nifi_create_home_dir: true 
+
+    # Sets the default shell for the NiFi service user. Only takes affect if nifi_create_home_dir is true.
+    nifi_default_shell: /bin/bash
 
     # specify -Djava.io.tmpdir in bootstrap.conf, default is unspecified
     #nifi_tmp_dir: /tmp
