@@ -63,37 +63,41 @@
             for. If the user never logs out, they will be required to log back in following
             this duration.
     -->
-    <!-- To enable the ldap-provider remove 2 lines. This is 1 of 2.
+{% if nifi_security_user_login_identity_provider != "ldap-provider" %}
+    <!-- To enable the ldap-provider remove 2 lines. This is 1 of 2. 
+{% endif %}
     <provider>
         <identifier>ldap-provider</identifier>
         <class>org.apache.nifi.ldap.LdapProvider</class>
-        <property name="Authentication Strategy">START_TLS</property>
+        <property name="Authentication Strategy">{{ nifi_ldap_provider_authentication_strategy }}</property>
 
-        <property name="Manager DN"></property>
-        <property name="Manager Password"></property>
+        <property name="Manager DN">{{ nifi_ldap_provider_manager_dn }}</property>
+        <property name="Manager Password">{{ nifi_ldap_provider_manager_password }}</property>
 
-        <property name="TLS - Keystore"></property>
-        <property name="TLS - Keystore Password"></property>
-        <property name="TLS - Keystore Type"></property>
-        <property name="TLS - Truststore"></property>
-        <property name="TLS - Truststore Password"></property>
-        <property name="TLS - Truststore Type"></property>
-        <property name="TLS - Client Auth"></property>
-        <property name="TLS - Protocol"></property>
-        <property name="TLS - Shutdown Gracefully"></property>
+        <property name="TLS - Keystore">{{ nifi_ldap_provider_tls_keystore }}</property>
+        <property name="TLS - Keystore Password">{{ nifi_ldap_provider_tls_keystore_password }}</property>
+        <property name="TLS - Keystore Type">{{ nifi_ldap_provider_tls_keystore_type }}</property>
+        <property name="TLS - Truststore">{{ nifi_ldap_provider_tls_truststore }}</property>
+        <property name="TLS - Truststore Password">{{ nifi_ldap_provider_tls_truststore_password }}</property>
+        <property name="TLS - Truststore Type">{{ nifi_ldap_provider_tls_truststore_type }}</property>
+        <property name="TLS - Client Auth">{{ nifi_ldap_provider_tls_client_auth }}</property>
+        <property name="TLS - Protocol">{{ nifi_ldap_provider_tls_protocol }}</property>
+        <property name="TLS - Shutdown Gracefully">{{ nifi_ldap_provider_tls_shutdown_gracefully }}</property>
+        
+        <property name="Referral Strategy">{{ nifi_ldap_provider_referral_strategy }}</property>
+        <property name="Connect Timeout">{{ nifi_ldap_provider_connect_timeout }}</property>
+        <property name="Read Timeout">{{ nifi_ldap_provider_read_timeout }}</property>
 
-        <property name="Referral Strategy">FOLLOW</property>
-        <property name="Connect Timeout">10 secs</property>
-        <property name="Read Timeout">10 secs</property>
+        <property name="Url">{{ nifi_ldap_provider_url }}</property>
+        <property name="User Search Base">{{ nifi_ldap_provider_user_search_base }}</property>
+        <property name="User Search Filter">{{ nifi_ldap_provider_user_search_filter }}</property>
 
-        <property name="Url"></property>
-        <property name="User Search Base"></property>
-        <property name="User Search Filter"></property>
-
-        <property name="Identity Strategy">USE_DN</property>
-        <property name="Authentication Expiration">12 hours</property>
+        <property name="Identity Strategy">{{ nifi_ldap_provider_identity_strategy }}</property>
+        <property name="Authentication Expiration">{{ nifi_ldap_provider_authentication_expiration }}</property>
     </provider>
+{% if nifi_security_user_login_identity_provider != "ldap-provider" %}
     To enable the ldap-provider remove 2 lines. This is 2 of 2. -->
+{% endif %}
 
     <!--
         Identity Provider for users logging in with username/password against a Kerberos KDC server.
