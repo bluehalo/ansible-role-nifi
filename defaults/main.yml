@@ -2,6 +2,11 @@
 # defaults file for nifi
 nifi_major_version: "{{ nifi_version | splitext | first }}"
 
+# NiFi service user settings
+nifi_create_home_dir: True
+nifi_home_dir: "/home/{{ nifi_user }}"
+nifi_default_shell: /bin/bash
+
 # installation locations
 nifi_base_dir: /opt/nifi
 nifi_etc_dir: /etc/nifi
