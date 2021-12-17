@@ -116,6 +116,10 @@ nifi_security_keyPasswd: "{{ nifi_security_keystorePasswd }}"
 nifi_security_truststore: "{{ nifi_conf_dir }}/truststore.jks"
 nifi_security_truststoreType: jks
 nifi_security_truststorePasswd: ''
+nifi_security_user_authorizer: single-user-authorizer
+nifi_security_allow_anonymous_authentication: false
+nifi_security_user_login_identity_provider: single-user-authorizer
+nifi_security_props_key: R5kxEYkfRxPlii7kIYAYy9LfeetCzsw
 
 # Logback logging levels and settings
 nifi_log_app_file_retention: 10

@@ -13,10 +13,16 @@
   with_items:
     - { src: "{{ nifi_major_version }}/authorizers.xml.j2", dest: "{{ nifi_conf_dir }}/authorizers.xml" }
     - { src: "{{ nifi_major_version }}/bootstrap.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap.conf" }
+    - { src: "{{ nifi_major_version }}/bootstrap-aws.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-aws.conf" }
+    - { src: "{{ nifi_major_version }}/bootstrap-azure.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-azure.conf" }
+    - { src: "{{ nifi_major_version }}/bootstrap-gcp.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-gcp.conf" }
+    - { src: "{{ nifi_major_version }}/bootstrap-hashicorp-vault.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-hashicorp-vault.conf" }
     - { src: "{{ nifi_major_version }}/bootstrap-notification-services.xml.j2", dest: "{{ nifi_conf_dir }}/bootstrap-notification-services.xml" }
     - { src: "{{ nifi_major_version }}/logback.xml.j2", dest: "{{ nifi_conf_dir }}/logback.xml" }
     - { src: "{{ nifi_major_version }}/login-identity-providers.xml.j2", dest: "{{ nifi_conf_dir }}/login-identity-providers.xml" }
     - { src: "{{ nifi_major_version }}/state-management.xml.j2", dest: "{{ nifi_conf_dir }}/state-management.xml" }
+    - { src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties" }
+    - { src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml" }
     - { src: "{{ nifi_major_version }}/zookeeper.properties.j2", dest: "{{ nifi_conf_dir }}/zookeeper.properties" }
   # notify:
     # - restart nifi
