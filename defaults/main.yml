@@ -107,6 +107,8 @@ nifi_zookeeper_autopurge_snapRetainCount: 30
 
 # Security settings
 nifi_initial_admin:
+nifi_single_user_username:
+nifi_single_user_password:
 nifi_is_secure: False
 nifi_web_https_port: 8443
 nifi_security_keystore: "{{ nifi_conf_dir }}/keystore.jks"

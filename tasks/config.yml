@@ -21,12 +21,20 @@
     - { src: "{{ nifi_major_version }}/logback.xml.j2", dest: "{{ nifi_conf_dir }}/logback.xml" }
     - { src: "{{ nifi_major_version }}/login-identity-providers.xml.j2", dest: "{{ nifi_conf_dir }}/login-identity-providers.xml" }
     - { src: "{{ nifi_major_version }}/state-management.xml.j2", dest: "{{ nifi_conf_dir }}/state-management.xml" }
-    - { src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties" }
     - { src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml" }
     - { src: "{{ nifi_major_version }}/zookeeper.properties.j2", dest: "{{ nifi_conf_dir }}/zookeeper.properties" }
   # notify:
     # - restart nifi
   tags: [ config ]
+
+- name: copy stateless nifi configs
+  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
+  with_items:
+    - { src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties" }
+    - { src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml" }
+    # notify:
+    # - restart nifi
+  tags: [ stateless, config ]
 
 - name: copy nifi scripts
   template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0755'

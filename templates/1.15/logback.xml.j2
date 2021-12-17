@@ -20,7 +20,7 @@
     </contextListener>
 
     <appender name="APP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${org.apache.nifi.bootstrap.config.log.dir}/nifi-app.log</file>
+        <file>{{ nifi_log_dir }}/nifi-app.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!--
               For daily rollover, use 'app_%d.log'.
@@ -28,7 +28,7 @@
               To GZIP rolled files, replace '.log' with '.log.gz'.
               To ZIP rolled files, replace '.log' with '.log.zip'.
             -->
-            <fileNamePattern>${org.apache.nifi.bootstrap.config.log.dir}/nifi-app_%d{yyyy-MM-dd_HH}.%i.log</fileNamePattern>
+            <fileNamePattern>{{ nifi_log_dir }}/nifi-app_%d{yyyy-MM-dd_HH}.%i.log</fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <!-- keep 30 log files worth of history -->
             <maxHistory>{{ nifi_log_app_file_retention }}</maxHistory>
@@ -40,7 +40,7 @@
     </appender>
 
     <appender name="USER_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${org.apache.nifi.bootstrap.config.log.dir}/nifi-user.log</file>
+        <file>{{ nifi_log_dir }}/nifi-user.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--
               For daily rollover, use 'user_%d.log'.
@@ -48,7 +48,7 @@
               To GZIP rolled files, replace '.log' with '.log.gz'.
               To ZIP rolled files, replace '.log' with '.log.zip'.
             -->
-            <fileNamePattern>${org.apache.nifi.bootstrap.config.log.dir}/nifi-user_%d.log</fileNamePattern>
+            <fileNamePattern>{{ nifi_log_dir }}/nifi-user_%d.log</fileNamePattern>
             <!-- keep 30 log files worth of history -->
             <maxHistory>{{ nifi_log_user_file_retention }}</maxHistory>
         </rollingPolicy>
@@ -58,7 +58,7 @@
     </appender>
 
     <appender name="BOOTSTRAP_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${org.apache.nifi.bootstrap.config.log.dir}/nifi-bootstrap.log</file>
+        <file>{{ nifi_log_dir }}/nifi-bootstrap.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--
               For daily rollover, use 'user_%d.log'.
@@ -66,7 +66,7 @@
               To GZIP rolled files, replace '.log' with '.log.gz'.
               To ZIP rolled files, replace '.log' with '.log.zip'.
             -->
-            <fileNamePattern>${org.apache.nifi.bootstrap.config.log.dir}/nifi-bootstrap_%d.log</fileNamePattern>
+            <fileNamePattern>{{ nifi_log_dir }}/nifi-bootstrap_%d.log</fileNamePattern>
             <!-- keep 5 log files worth of history -->
             <maxHistory>5</maxHistory>
         </rollingPolicy>
