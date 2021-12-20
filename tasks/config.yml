@@ -22,25 +22,25 @@
     # - restart nifi
   tags: [ config ]
 
-#- name: copy bootstrap provider configs
-#  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
-#  with_items:
-#  - { src: "{{ nifi_major_version }}/bootstrap-aws.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-aws.conf" }
-#  - { src: "{{ nifi_major_version }}/bootstrap-azure.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-azure.conf" }
-#  - { src: "{{ nifi_major_version }}/bootstrap-gcp.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-gcp.conf" }
-#  - { src: "{{ nifi_major_version }}/bootstrap-hashicorp-vault.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-hashicorp-vault.conf" }
-#  notify:
-#    - restart nifi
-#  tags: [ stateless, config ]
+- name: copy bootstrap provider configs
+  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
+  with_items:
+  - { src: "{{ nifi_major_version }}/bootstrap-aws.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-aws.conf" }
+  - { src: "{{ nifi_major_version }}/bootstrap-azure.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-azure.conf" }
+  - { src: "{{ nifi_major_version }}/bootstrap-gcp.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-gcp.conf" }
+  - { src: "{{ nifi_major_version }}/bootstrap-hashicorp-vault.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-hashicorp-vault.conf" }
+  notify:
+    - restart nifi
+  tags: [ stateless, config ]
 
-#- name: copy stateless nifi configs
-#  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
-#  with_items:
-#    - { src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties" }
-#    - { src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml" }
-    # notify:
-    # - restart nifi
-#  tags: [ stateless, config ]
+- name: copy stateless nifi configs
+  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
+  with_items:
+    - { src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties" }
+    - { src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml" }
+     notify:
+     - restart nifi
+  tags: [ stateless, config ]
 
 - name: copy nifi scripts
   template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0755'
