@@ -38,8 +38,8 @@
   with_items:
     - { src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties" }
     - { src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml" }
-     notify:
-     - restart nifi
+#  notify:
+#    - restart nifi
   tags: [ stateless, config ]
 
 - name: copy nifi scripts
