@@ -63,29 +63,27 @@ nifi.state.management.embedded.zookeeper.properties={{ nifi_conf_dir }}/zookeepe
 nifi.database.directory={{ nifi_database_repository }}
 nifi.h2.url.append=;LOCK_TIMEOUT=25000;WRITE_DELAY=0;AUTO_SERVER=FALSE
 
+# Repository Encryption properties override individual repository implementation properties
+nifi.repository.encryption.protocol.version=
+nifi.repository.encryption.key.id=
+nifi.repository.encryption.key.provider=
+nifi.repository.encryption.key.provider.keystore.location=
+nifi.repository.encryption.key.provider.keystore.password=
+
 # FlowFile Repository
 nifi.flowfile.repository.implementation=org.apache.nifi.controller.repository.WriteAheadFlowFileRepository
 nifi.flowfile.repository.wal.implementation=org.apache.nifi.wali.SequentialAccessWriteAheadLog
 nifi.flowfile.repository.directory={{ nifi_flowfile_repository }}
-nifi.flowfile.repository.partitions=256
-nifi.flowfile.repository.checkpoint.interval=2 mins
+nifi.flowfile.repository.checkpoint.interval=20 secs
 nifi.flowfile.repository.always.sync=false
-nifi.flowfile.repository.encryption.key.provider.implementation=
-nifi.flowfile.repository.encryption.key.provider.location=
-nifi.flowfile.repository.encryption.key.id=
-nifi.flowfile.repository.encryption.key=
+nifi.flowfile.repository.retain.orphaned.flowfiles=true
 
 nifi.swap.manager.implementation=org.apache.nifi.controller.FileSystemSwapManager
 nifi.queue.swap.threshold={{ nifi_queue_swap_threshold }}
-nifi.swap.in.period=5 sec
-nifi.swap.in.threads={{ nifi_swap_in_threads }}
-nifi.swap.out.period=5 sec
-nifi.swap.out.threads={{ nifi_swap_out_threads }}
 
 # Content Repository
 nifi.content.repository.implementation=org.apache.nifi.controller.repository.FileSystemRepository
 nifi.content.claim.max.appendable.size={{ nifi_content_claim_max_appendable_size }}
-nifi.content.claim.max.flow.files={{ nifi_content_claim_max_flow_files }}
 {% for repo in nifi_content_repositories -%}
 nifi.content.repository.directory.repo{{ loop.index0 }}={{ repo }}
 {% endfor -%}
@@ -94,18 +92,9 @@ nifi.content.repository.archive.max.usage.percentage={{ nifi_content_archive_max
 nifi.content.repository.archive.enabled={{ nifi_content_archive_enabled | lower }}
 nifi.content.repository.always.sync={{ nifi_content_always_sync | lower }}
 nifi.content.viewer.url=../nifi-content-viewer/
-nifi.content.repository.encryption.key.provider.implementation=
-nifi.content.repository.encryption.key.provider.location=
-nifi.content.repository.encryption.key.id=
-nifi.content.repository.encryption.key=
 
 # Provenance Repository Properties
 nifi.provenance.repository.implementation=org.apache.nifi.provenance.{{ nifi_provenance_implementation }}
-nifi.provenance.repository.debug.frequency=1_000_000
-nifi.provenance.repository.encryption.key.provider.implementation=
-nifi.provenance.repository.encryption.key.provider.location=
-nifi.provenance.repository.encryption.key.id=
-nifi.provenance.repository.encryption.key=
 
 # Persistent Provenance Repository Properties
 {% for repo in nifi_provenance_repositories -%}
@@ -136,22 +125,34 @@ nifi.provenance.repository.concurrent.merge.threads=2
 # Volatile Provenance Respository Properties
 nifi.provenance.repository.buffer.size={{ nifi_provenance_repository_buffer_size }}
 
-# Component Status Repository
+# Component and Node Status History Repository
 nifi.components.status.repository.implementation=org.apache.nifi.controller.status.history.VolatileComponentStatusRepository
+
+# Volatile Status History Repository Properties
 nifi.components.status.repository.buffer.size={{ nifi_components_status_repository_buffer_size }}
 nifi.components.status.snapshot.frequency={{ nifi_components_status_snapshot_frequency }}
 
+# QuestDB Status History Repository Properties
+nifi.status.repository.questdb.persist.node.days=14
+nifi.status.repository.questdb.persist.component.days=3
+nifi.status.repository.questdb.persist.location=./status_repository
+
 # Site to Site properties
 nifi.remote.input.host={{ nifi_remote_input_host }}
-nifi.remote.input.secure={{ nifi_is_secure | lower }}
+nifi.remote.input.secure={{ nifi_remote_input_secure | lower }}
 nifi.remote.input.socket.port={{ nifi_remote_input_socket_port }}
-nifi.remote.input.http.enabled={{ (not nifi_is_secure) | lower }}
+nifi.remote.input.http.enabled={{ nifi_remote_input_http_enabled | lower }}
 nifi.remote.input.http.transaction.ttl=30 sec
 nifi.remote.contents.cache.expiration=30 secs
 
 # web properties #
-nifi.web.war.directory=./lib
+#############################################
 {% if nifi_is_secure -%}
+
+# For security, NiFi will present the UI on 127.0.0.1 and only be accessible through this loopback interface.
+# Be aware that changing these properties may affect how your instance can be accessed without any restriction.
+# We recommend configuring HTTPS instead. The administrators guide provides instructions on how to do this.
+
 nifi.web.http.host=
 nifi.web.http.port=
 nifi.web.http.network.interface.default=
@@ -166,19 +167,33 @@ nifi.web.https.host=
 nifi.web.https.port=
 nifi.web.https.network.interface.default=
 {% endif -%}
+
+#############################################
+
 nifi.web.jetty.working.directory=./work/jetty
 nifi.web.jetty.threads=200
 nifi.web.max.header.size={{ nifi_web_max_header_size }}
 nifi.web.proxy.context.path={{ nifi_web_proxy_context_path }}
 nifi.web.proxy.host={{ nifi_web_proxy_host }}
+nifi.web.max.content.size=
+nifi.web.max.requests.per.second=30000
+nifi.web.max.access.token.requests.per.second=25
+nifi.web.request.timeout=60 secs
+nifi.web.request.ip.whitelist=
+nifi.web.should.send.server.version=true
+
+# Include or Exclude TLS Cipher Suites for HTTPS
+nifi.web.https.ciphersuites.include=
+nifi.web.https.ciphersuites.exclude=
 
 # security properties #
 nifi.sensitive.props.key={{ nifi_security_props_key | default('nififtw!') }}
 nifi.sensitive.props.key.protected=
-nifi.sensitive.props.algorithm={{ nifi_security_props_algorithm | default('PBEWITHMD5AND256BITAES-CBC-OPENSSL') }}
-nifi.sensitive.props.provider=BC
+nifi.sensitive.props.algorithm={{ nifi_security_props_algorithm | default('NIFI_PBKDF2_AES_GCM_256') }}
 nifi.sensitive.props.additional.keys=
 
+nifi.security.autoreload.enabled=false
+nifi.security.autoreload.interval=10 secs
 {% if nifi_is_secure -%}
 nifi.security.keystore={{ nifi_security_keystore }}
 nifi.security.keystoreType={{ nifi_security_keystoreType }}
@@ -197,8 +212,11 @@ nifi.security.truststoreType=
 nifi.security.truststorePasswd=
 {% endif -%}
 nifi.security.needClientAuth={{ nifi_need_client_auth | default('')}}
-nifi.security.user.authorizer=managed-authorizer
-nifi.security.user.login.identity.provider=
+
+nifi.security.user.authorizer={{ nifi_security_user_authorizer }}
+nifi.security.allow.anonymous.authentication={{ nifi_security_allow_anonymous_authentication | lower }}
+nifi.security.user.login.identity.provider={{ nifi_security_user_login_identity_provider }}
+nifi.security.user.jws.key.rotation.period=PT1H
 nifi.security.ocsp.responder.url=
 nifi.security.ocsp.responder.certificate=
 
@@ -211,12 +229,30 @@ nifi.security.user.oidc.client.secret=
 nifi.security.user.oidc.preferred.jwsalgorithm=
 nifi.security.user.oidc.additional.scopes=
 nifi.security.user.oidc.claim.identifying.user=
+nifi.security.user.oidc.fallback.claims.identifying.user=
 
 # Apache Knox SSO Properties #
 nifi.security.user.knox.url=
 nifi.security.user.knox.publicKey=
 nifi.security.user.knox.cookieName=hadoop-jwt
 nifi.security.user.knox.audiences=
+
+# SAML Properties #
+nifi.security.user.saml.idp.metadata.url=
+nifi.security.user.saml.sp.entity.id=
+nifi.security.user.saml.identity.attribute.name=
+nifi.security.user.saml.group.attribute.name=
+nifi.security.user.saml.metadata.signing.enabled=false
+nifi.security.user.saml.request.signing.enabled=false
+nifi.security.user.saml.want.assertions.signed=true
+nifi.security.user.saml.signature.algorithm=http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
+nifi.security.user.saml.signature.digest.algorithm=http://www.w3.org/2001/04/xmlenc#sha256
+nifi.security.user.saml.message.logging.enabled=false
+nifi.security.user.saml.authentication.expiration=12 hours
+nifi.security.user.saml.single.logout.enabled=false
+nifi.security.user.saml.http.client.truststore.strategy=JDK
+nifi.security.user.saml.http.client.connect.timeout=30 secs
+nifi.security.user.saml.http.client.read.timeout=30 secs
 
 # Identity Mapping Properties #
 # These properties allow normalizing user identities such that identities coming from different identity providers
@@ -240,6 +276,7 @@ nifi.security.user.knox.audiences=
 
 # cluster common properties (all nodes must have same values) #
 nifi.cluster.protocol.heartbeat.interval=5 sec
+nifi.cluster.protocol.heartbeat.missable.max=8
 nifi.cluster.protocol.is.secure={{ nifi_is_secure | lower }}
 
 # cluster node properties (only configure for cluster nodes) #
@@ -263,7 +300,7 @@ nifi.cluster.flow.election.max.candidates=
 # cluster load balancing properties #
 nifi.cluster.load.balance.host=
 nifi.cluster.load.balance.port=6342
-nifi.cluster.load.balance.connections.per.node=4
+nifi.cluster.load.balance.connections.per.node=2
 nifi.cluster.load.balance.max.thread.count=8
 nifi.cluster.load.balance.comms.timeout=30 sec
 
@@ -273,9 +310,17 @@ nifi.zookeeper.connect.string={{ nifi_zookeeper_servers | join(':2181,') }}:2181
 {% else -%}
 nifi.zookeeper.connect.string=
 {% endif -%}
-nifi.zookeeper.connect.timeout=3 secs
-nifi.zookeeper.session.timeout=3 secs
+nifi.zookeeper.connect.timeout=10 secs
+nifi.zookeeper.session.timeout=10 secs
 nifi.zookeeper.root.node={{ nifi_zookeeper_root_node }}
+nifi.zookeeper.client.secure=false
+nifi.zookeeper.security.keystore=
+nifi.zookeeper.security.keystoreType=
+nifi.zookeeper.security.keystorePasswd=
+nifi.zookeeper.security.truststore=
+nifi.zookeeper.security.truststoreType=
+nifi.zookeeper.security.truststorePasswd=
+nifi.zookeeper.jute.maxbuffer=
 
 # Zookeeper properties for the authentication scheme used when creating acls on znodes used for cluster management
 # Values supported for nifi.zookeeper.auth.type are "default", which will apply world/anyone rights on znodes
@@ -310,3 +355,27 @@ nifi.analytics.query.interval=5 mins
 nifi.analytics.connection.model.implementation=org.apache.nifi.controller.status.analytics.models.OrdinaryLeastSquares
 nifi.analytics.connection.model.score.name=rSquared
 nifi.analytics.connection.model.score.threshold=.90
+
+# runtime monitoring properties
+nifi.monitor.long.running.task.schedule=
+nifi.monitor.long.running.task.threshold=
+
+# Create automatic diagnostics when stopping/restarting NiFi.
+
+# Enable automatic diagnostic at shutdown.
+nifi.diagnostics.on.shutdown.enabled=false
+
+# Include verbose diagnostic information.
+nifi.diagnostics.on.shutdown.verbose=false
+
+# The location of the diagnostics folder.
+nifi.diagnostics.on.shutdown.directory=./diagnostics
+
+# The maximum number of files permitted in the directory. If the limit is exceeded, the oldest files are deleted.
+nifi.diagnostics.on.shutdown.max.filecount=10
+
+# The diagnostics folder's maximum permitted size in bytes. If the limit is exceeded, the oldest files are deleted.
+nifi.diagnostics.on.shutdown.max.directory.size=10 MB
+
+
+

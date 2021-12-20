@@ -169,9 +169,9 @@ nifi.web.max.requests.per.second=30000
 nifi.web.should.send.server.version=true
 
 # security properties #
-nifi.sensitive.props.key=
+nifi.sensitive.props.key={{ nifi_security_props_key | default('nififtw!') }}
 nifi.sensitive.props.key.protected=
-nifi.sensitive.props.algorithm=PBEWITHMD5AND256BITAES-CBC-OPENSSL
+nifi.sensitive.props.algorithm={{ nifi_security_props_algorithm | default('PBEWITHMD5AND256BITAES-CBC-OPENSSL') }}
 nifi.sensitive.props.provider=BC
 nifi.sensitive.props.additional.keys=
 
