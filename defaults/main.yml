@@ -149,3 +149,5 @@ nifi_custom_log_levels: []
 
 # Extra Properties
 nifi_variable_registry_properties: [ "{{ nifi_conf_dir }}/extra-args.properties" ]
+
+nifi_bootstrap_listen_port: 0
