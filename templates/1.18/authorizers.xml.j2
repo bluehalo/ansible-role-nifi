@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<authorizers>
+
+{% if nifi_security_user_login_identity_provider == "single-user-provider" -%}
+    <userGroupProvider>
+        <identifier>file-user-group-provider</identifier>
+        <class>org.apache.nifi.authorization.FileUserGroupProvider</class>
+        <property name="Users File">{{ nifi_conf_dir }}/users.xml</property>
+        <property name="Legacy Authorized Users File"></property>
+        <property name="Initial User Identity 1">{{ nifi_initial_admin }}</property>
+        {% if nifi_authorized_nodes_list | length > 0 -%}
+        {% for node in nifi_authorized_nodes_list -%}
+        <property name="Initial User Identity {{ loop.index + 1 }}">{{ node }}</property>
+        {% endfor -%}
+        {% endif -%}
+
+    </userGroupProvider>
+
+    <accessPolicyProvider>
+        <identifier>file-access-policy-provider</identifier>
+        <class>org.apache.nifi.authorization.FileAccessPolicyProvider</class>
+        <property name="User Group Provider">file-user-group-provider</property>
+        <property name="Authorizations File">{{ nifi_conf_dir }}/authorizations.xml</property>
+        <property name="Initial Admin Identity">{{ nifi_initial_admin }}</property>
+        <property name="Legacy Authorized Users File"></property>
+        {% if nifi_authorized_nodes_list | length > 0 -%}
+        {% for node in nifi_authorized_nodes_list -%}
+        <property name="Node Identity {{ loop.index }}">{{ node }}</property>
+        {% endfor -%}
+        {% endif -%}
+    </accessPolicyProvider>
+
+    <authorizer>
+        <identifier>managed-authorizer</identifier>
+        <class>org.apache.nifi.authorization.StandardManagedAuthorizer</class>
+        <property name="Access Policy Provider">file-access-policy-provider</property>
+    </authorizer>
+
+    <authorizer>
+        <identifier>single-user-authorizer</identifier>
+        <class>org.apache.nifi.authorization.single.user.SingleUserAuthorizer</class>
+    </authorizer>
+{% endif -%}
+
+{% if nifi_security_user_login_identity_provider == "ldap-provider" -%}
+    {% for user_search_base in nifi_ldap.users_search_bases -%}
+    <userGroupProvider>
+        <identifier>ldap-user-group-provider-{{ loop.index }}</identifier>
+        <class>org.apache.nifi.ldap.tenants.LdapUserGroupProvider</class>
+        <property name="Authentication Strategy">{{ nifi_ldap.auth_strategy }}</property>
+
+        <property name="Manager DN">{{ nifi_ldap.manager_dn }}</property>
+        <property name="Manager Password">{{ nifi_ldap.manager_password }}</property>
+
+        {% if nifi_ldap.auth_strategy == "LDAPS" -%}
+        <property name="TLS - Keystore">{{ nifi_security_keystore }}</property>
+        <property name="TLS - Keystore Password">{{ nifi_security_keystorePasswd }}</property>
+        <property name="TLS - Keystore Type">{{ nifi_security_keystoreType }}</property>
+        <property name="TLS - Truststore">{{ nifi_security_truststore }}</property>
+        <property name="TLS - Truststore Password">{{ nifi_security_truststorePasswd }}</property>
+        <property name="TLS - Truststore Type">{{ nifi_security_truststoreType }}</property>
+        <property name="TLS - Client Auth">WANT</property>
+        <property name="TLS - Protocol">TLSv1.2</property>
+        <property name="TLS - Shutdown Gracefully"></property>
+        {% endif -%}
+
+        <property name="Referral Strategy">FOLLOW</property>
+        <property name="Connect Timeout">20 secs</property>
+        <property name="Read Timeout">2 mins</property>
+
+        <property name="Url">{{ nifi_ldap.url }}</property>
+        <property name="Page Size">500</property>
+        <property name="Sync Interval">5 mins</property>
+        <property name="Group Membership - Enforce Case Sensitivity">false</property>
+
+        <property name="User Search Base">{{ user_search_base }}</property>
+        <property name="User Object Class">user</property>
+        <property name="User Search Scope">SUBTREE</property>
+        <property name="User Search Filter">(&amp;(|{% for group in nifi_ldap.groups_cn -%}(memberOf=CN={{ group }},{{ nifi_ldap.groups_ou }}){% endfor -%})(userAccountControl:1.2.840.113556.1.4.803:=512)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(userAccountControl:1.2.840.113556.1.4.803:=16)))</property>
+        <property name="User Identity Attribute">sAMAccountName</property>
+        <property name="User Group Name Attribute"></property>
+        <property name="User Group Name Attribute - Referenced Group Attribute"></property>
+
+        <property name="Group Search Base">{{ nifi_ldap.groups_ou }}</property>
+        <property name="Group Object Class">group</property>
+        <property name="Group Search Scope">SUBTREE</property>
+        <property name="Group Search Filter">(|{% for group in nifi_ldap.groups_cn -%}(CN={{ group }}){% endfor -%})</property>
+        <property name="Group Name Attribute">cn</property>
+        <property name="Group Member Attribute">member</property>
+        <property name="Group Member Attribute - Referenced User Attribute"></property>
+    </userGroupProvider>
+
+    {% endfor -%}
+
+    <userGroupProvider>
+        <identifier>file-node-group-provider</identifier>
+        <class>org.apache.nifi.authorization.FileUserGroupProvider</class>
+        <property name="Users File">{{ nifi_conf_dir }}/users.xml</property>
+        <property name="Legacy Authorized Users File"></property>
+
+        {% if nifi_authorized_nodes_list | length > 0 -%}
+        {% for node in nifi_authorized_nodes_list -%}
+        <property name="Initial User Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>
+        {% endfor -%}
+        {% endif -%}
+    </userGroupProvider>
+ 
+
+    <userGroupProvider>
+        <identifier>composite-configurable-user-group-provider</identifier>
+        <class>org.apache.nifi.authorization.CompositeConfigurableUserGroupProvider</class>
+        <property name="Configurable User Group Provider">file-node-group-provider</property>
+        
+        {% for user_search_base in nifi_ldap.users_search_bases -%}
+        <property name="User Group Provider {{ loop.index }}">ldap-user-group-provider-{{ loop.index }}</property>
+        {% endfor -%}
+    </userGroupProvider>
+
+
+    <accessPolicyProvider>
+        <identifier>composite-access-policy-provider</identifier>
+        <class>org.apache.nifi.authorization.FileAccessPolicyProvider</class>
+        <property name="User Group Provider">composite-configurable-user-group-provider</property>
+        <property name="Authorizations File">{{ nifi_conf_dir }}/authorizations.xml</property>
+        <property name="Initial Admin Identity">{{ nifi_initial_admin }}</property>
+        <property name="Legacy Authorized Users File"></property>
+        {% if nifi_authorized_nodes_list | length > 0 -%}
+        {% for node in nifi_authorized_nodes_list -%}
+        <property name="Node Identity {{ loop.index }}">CN={{ node }}, OU=NIFI</property>
+        {% endfor -%}
+        {% endif -%}
+        <property name="Node Group"></property>
+    </accessPolicyProvider>
+ 
+    <authorizer>
+        <identifier>managed-authorizer</identifier>
+        <class>org.apache.nifi.authorization.StandardManagedAuthorizer</class>
+        <property name="Access Policy Provider">composite-access-policy-provider</property>
+    </authorizer>
+{% endif -%}
+
+</authorizers>

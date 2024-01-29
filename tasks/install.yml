@@ -1,47 +1,53 @@
 ---
-- name: ensure nifi group exists
-  group: name="{{ nifi_user }}"
-  tags: [ user ]
-
-- name: ensure nifi user exists
-  user: 
-    name: "{{ nifi_user }}"
-    group: "{{ nifi_user }}"
-    shell: "{{ nifi_create_home_dir | ternary(nifi_default_shell, '/sbin/nologin') }}"
-    home:  "{{ nifi_home_dir }}"
-    create_home: "{{ nifi_create_home_dir }}"
-  tags: [ user ]
-
 # tasks file for nifi
 - name: Ensure nifi files are world-readable
-  file: path="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" state=directory mode="a+rX" recurse=yes
+  file:
+    path: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}"
+    state: directory
+    mode: 0755
+    recurse: yes
 
 - name: Ensure nifi symlink
-  file: src="{{ nifi_base_dir }}/nifi-{{ nifi_version }}" dest="{{ nifi_home }}" state=link
-  # notify:
-    # - restart nifi
+  file:
+    src: "{{ nifi_base_dir }}/nifi-{{ nifi_version }}"
+    dest: "{{ nifi_home }}"
+    state: link
+  notify:
+    - Restart nifi
 
 - name: Create nifi systemd service
-  template: src=nifi.service.j2 dest="{{ nifi_service }}" owner=root group=root mode=0644
+  template:
+    src: nifi.service.j2
+    dest: "{{ nifi_service }}"
+    owner: root
+    group: root
+    mode: 0644
   notify:
-    - reload systemd
-    - restart nifi
-  when: >
-    (ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux") and
-    ansible_distribution_major_version >= "7"
-  tags: [ service ]
+    - Reload systemd
+    - Restart nifi
+  tags: [service]
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
 
 - name: Create nifi init.d service
-  template: src=nifi-startup.sh.j2 dest=/etc/init.d/nifi owner=root group=root mode=0755
-  when: >
-    ansible_distribution == "Amazon" or
-    ((ansible_distribution == "CentOS" or ansible_distribution == "Red Hat Enterprise Linux") and
-      ansible_distribution_major_version < "7")
-  tags: [ service ]
+  template:
+    src: nifi-startup.sh.j2
+    dest: /etc/init.d/nifi
+    owner: root
+    group: root
+    mode: 0755
+  tags: [service]
 
 - name: Ensure nifi-required directories exist and are world-readable
-  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
-  with_items:
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
+  loop:
     - "{{ nifi_bin_dir }}"
     - "{{ nifi_conf_dir }}"
     - "{{ nifi_log_dir }}"
@@ -54,29 +60,59 @@
     - "{{ nifi_flowfile_repository }}"
 
 - name: Ensure nifi tmp_dir exists
-  file: path="{{ nifi_tmp_dir }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
+  file:
+    path: "{{ nifi_tmp_dir }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
   when:
     - nifi_tmp_dir is defined
 
 - name: ensure nifi content repo directories exist
-  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
-  with_items: "{{ nifi_content_repositories }}"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
+  loop: "{{ nifi_content_repositories }}"
 
 - name: ensure nifi provenance repo directories exist
-  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
-  with_items: "{{ nifi_provenance_repositories }}"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
+  loop: "{{ nifi_provenance_repositories }}"
 
 - name: ensure zookeeper data directory exists
-  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
-  with_items:
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
+  loop:
     - "{{ nifi_zookeeper_dir }}"
     - "{{ nifi_zookeeper_dir }}/version-2"
   when: nifi_state_management_embedded_zookeeper_start
 
 - name: add myid file for embedded zookeeper
-  template: src="myid.j2" dest="{{ nifi_zookeeper_dir }}/myid" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
+  template:
+    src: "myid.j2"
+    dest: "{{ nifi_zookeeper_dir }}/myid"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: "0644"
   when: nifi_state_management_embedded_zookeeper_start
 
 - name: ensure nifi extra directories exist
-  file: path="{{ item }}" state=directory owner="{{ nifi_user }}" group="{{ nifi_user }}" mode=0755
-  with_items: "{{ nifi_extra_dirs | default([]) }}"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: 0755
+  loop: "{{ nifi_extra_dirs | default([]) }}"

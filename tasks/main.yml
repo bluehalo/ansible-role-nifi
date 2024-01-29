@@ -1,3 +1,6 @@
----
-- include: install.yml
-- include: config.yml
+- import_tasks: configure_os.yaml
+  tags: [configure_os]
+- import_tasks: download.yaml
+- import_tasks: install.yml
+- import_tasks: config.yml
+  tags: [configure_nifi]

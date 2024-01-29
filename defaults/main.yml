@@ -1,11 +1,54 @@
 ---
-# defaults file for nifi
-nifi_major_version: "{{ nifi_version | splitext | first }}"
+# defaults file for nifi node setup and configure
+
+#OS settings
+nifi_file_limits:
+  - src: "nifi-limits.conf.j2"
+    dest: /etc/security/limits.d/nifi-limits.conf
+
+nifi_sysctl:
+  - key: net.ipv4.ip_local_port_range
+    value: "10000 65000"
+  - key: net.netfilter.nf_conntrack_tcp_timeout_time_wait
+    value: 1
+
+nifi_kernel_modules:
+  - nf_conntrack_netlink
+  - nf_conntrack
+  - nf_conntrack_ipv4
+  - nf_defrag_ipv4
+
+nifi_rh_packages:
+  - java-11-openjdk
+  - maven
+  - python3
 
 # NiFi service user settings
+nifi_create_user: False
+nifi_user: nifi
+nifi_default_shell: /bin/bash
+
 nifi_create_home_dir: True
 nifi_home_dir: "/home/{{ nifi_user }}"
-nifi_default_shell: /bin/bash
+
+nifi_service: /etc/systemd/system/nifi.service
+
+# Pathes
+nifi_home: "{{ nifi_base_dir }}/nifi-current"
+nifi_bin_dir: "{{ nifi_home }}/bin"
+nifi_conf_dir: "{{ nifi_home }}/conf"
+nifi_nar_dir: "{{ nifi_home }}/lib"
+nifi_work_dir: "{{ nifi_home }}/work"
+nifi_pid_file: "{{ nifi_pid_dir }}/nifi.pid"
+
+#Download settings
+nifi_version: 1.18.0
+nifi_need_download: False
+nifi_repo: https://archive.apache.org/dist/nifi/1.18.0/nifi-1.18.0-bin.zip
+nifi_major_version: "{{ nifi_version | splitext | first }}"
+
+nifi_java_home: /usr/lib/jvm/java-11-openjdk-11.0.17.0.8-2.el7_9.x86_64
+nifi_bootstrap_listen_port: 0
 
 # installation locations
 nifi_base_dir: /opt/nifi
@@ -23,9 +66,6 @@ nifi_remote_debugging_port: 8000
 # whether to restart nifi after making changes; default is True, for a cluster you may wish to disable
 nifi_perform_restart: True
 
-# whether to force a restart, useful if another role has made changes (such as updating a custom nar); default is False
-nifi_force_restart: False
-
 # A complete list of IP addresses for each nodes within the nifi cluster
 nifi_authorized_nodes_list: []
 
@@ -38,35 +78,44 @@ nifi_custom_nars: []
 # Watched directory watched for new NARs
 nifi_nar_library_autoload_directory: "{{ nifi_home }}/extensions"
 
-nifi_graceful_shutdown_secs: '20'
+nifi_graceful_shutdown_secs: "20"
 
-nifi_node_jvm_memory: '1024m'
-nifi_java_command: 'java'
+nifi_node_max_heap_size: "1000m"
+nifi_node_jvm_memory: "14800m"
+# -XX:MaxPermSize
+nifi_node_jvm_perm_memory: "64m"
+# Enable -XX:+UseCodeCacheFlushing
+nifi_use_code_flushing: False
+
+nifi_java_command: "java"
 
 # defaults file / directories for nifi
 nifi_database_repository: "{{ nifi_home }}/database_repository"
 nifi_flowfile_repository: "{{ nifi_home }}/flowfile_repository"
-nifi_content_repositories: [ "{{ nifi_home }}/content_repository" ]
-nifi_provenance_repositories: [ "{{ nifi_home }}/provenance_repository" ]
+nifi_content_repositories: ["{{ nifi_home }}/content_repository"]
+nifi_provenance_repositories: ["{{ nifi_home }}/provenance_repository"]
 
 # Web properties
-nifi_input_socket_host:
+nifi_input_socket_host: "{{ inventory_hostname }}"
 nifi_web_http_port: 8080
-nifi_web_max_header_size: '16 KB'
+nifi_web_max_header_size: "16 KB"
 nifi_web_proxy_context_path:
-nifi_web_proxy_host:
+nifi_web_proxy_host: "{{ inventory_hostname }}"
 
 # NiFi cluster settings
-nifi_single_node: True
-nifi_cluster_node_address:
-nifi_cluster_node_protocol_port:
+nifi_single_node: False
+nifi_cluster_node_address: "{{ inventory_hostname }}"
+nifi_cluster_node_protocol_port: 11443
+nifi_cluster_protocol_heartbeat_interval: "5 sec"
+nifi_cluster_node_connection_timeout: 30 sec
+nifi_cluster_node_read_timeout: 30 sec
 
 # Site to Site properties
 nifi_remote_input_host:
 nifi_remote_input_secure: False
-nifi_remote_input_socket_port:
-nifi_remote_input_http_enabled: False
-nifi_remote_input_http_transaction_ttl: '30 sec'
+nifi_remote_input_socket_port: 10443
+nifi_remote_input_http_enabled: True
+nifi_remote_input_http_transaction_ttl: "30 sec"
 
 # Queue swap settings
 nifi_queue_swap_threshold: 20000
@@ -75,58 +124,82 @@ nifi_swap_out_threads: 4
 
 # Content Repository Settings
 nifi_content_claim_max_flow_files: 100
-nifi_content_claim_max_appendable_size: '10 MB'
-nifi_content_archive_max_retention_period: '12 hours'
-nifi_content_archive_max_usage_percentage: '50%'
-nifi_content_archive_enabled: 'false'
-nifi_content_always_sync: 'false'
+nifi_content_claim_max_appendable_size: "10 MB"
+nifi_content_archive_max_retention_period: "12 hours"
+nifi_content_archive_max_usage_percentage: "50%"
+nifi_content_archive_enabled: "false"
+nifi_content_always_sync: "false"
 
 # Provenance Settings
-nifi_provenance_implementation: PersistentProvenanceRepository
-nifi_provenance_max_storage_time: '24 hours'
-nifi_provenance_max_storage_size: '1 GB'
-nifi_provenance_rollover_time: '30 secs'
-nifi_provenance_rollover_size: '100 MB'
-nifi_provenance_query_threads: 2
+nifi_provenance_implementation: WriteAheadProvenanceRepository
+nifi_provenance_max_storage_time: "30 days"
+nifi_provenance_max_storage_size: "100 GB"
+nifi_provenance_rollover_time: "30 secs"
+nifi_provenance_rollover_size: "300 MB"
+nifi_provenance_query_threads: 4
 nifi_provenance_index_threads: 2
 nifi_provenance_repository_buffer_size: 100000
 nifi_provenance_indexed_fields: EventType, FlowFileUUID, Filename, ProcessorID, Relationship
 
 # Status repository settings
 nifi_components_status_repository_buffer_size: 1440
-nifi_components_status_snapshot_frequency: '1 min'
+nifi_components_status_snapshot_frequency: "1 min"
 
 # NiFi zookeeper settings
 nifi_zookeeper_servers: []
 nifi_zookeeper_dir: /data/zookeeper
 nifi_state_management_embedded_zookeeper_start: False
-nifi_zookeeper_root_node: '/nifi'
-nifi_zookeeper_session_timeout: '10 seconds'
+nifi_zookeeper_root_node: "/nifi"
+# value for state-management.xml
+nifi_zookeeper_conf_session_timeout: "10 seconds"
+#value for nifi.properties
+nifi_zookeeper_session_timeout: "10 secs"
+nifi_zookeeper_connect_timeout: "10 secs"
 nifi_zookeeper_autopurge_purgeInterval: 24
 nifi_zookeeper_autopurge_snapRetainCount: 30
 
 # Security settings
 nifi_initial_admin:
-nifi_single_user_username:
-nifi_single_user_password:
+nifi_single_user_username: single_user
+nifi_single_user_password: change_it
 nifi_is_secure: False
 nifi_web_https_port: 8443
 nifi_security_keystore: "{{ nifi_conf_dir }}/keystore.jks"
 nifi_security_keystoreType: jks
-nifi_security_keystorePasswd: ''
+nifi_security_keystorePasswd: "changeit"
 nifi_security_keyPasswd: "{{ nifi_security_keystorePasswd }}"
 nifi_security_truststore: "{{ nifi_conf_dir }}/truststore.jks"
 nifi_security_truststoreType: jks
-nifi_security_truststorePasswd: ''
+nifi_security_truststorePasswd: "change_it"
 nifi_security_user_authorizer: single-user-authorizer
 nifi_security_allow_anonymous_authentication: false
-nifi_security_user_login_identity_provider: single-user-authorizer
+nifi_security_user_login_identity_provider: single-user-provider
 nifi_security_props_key: R5kxEYkfRxPlii7kIYAYy9LfeetCzsw
+nifi_security_identity: false
+
+# LDAP NiFI properties
+# nifi_security_user_login_identity_provider: ldap-provider
+
+nifi_ldap:
+  identity_strategy: USE_USERNAME
+  url: ldaps://ldap.ru
+  auth_strategy: LDAPS
+  manager_dn: 
+  manager_password: change_it
+  ldap_username_in_lower_case: true
+  ldap_group_in_lower_case: true
+  users_search_bases: []
+  groups_ou:
+  groups_cn: []
+
+# Backup configs before replece them by template
+nifi_backup_congif: true
 
 # Logback logging levels and settings
 nifi_log_app_file_retention: 10
 nifi_log_user_file_retention: 10
 nifi_log_boot_file_retention: 10
+nifi_logs_total_size_cap: 10GB
 nifi_log_level_root: INFO
 nifi_log_level_org_apache_nifi: INFO
 nifi_log_level_org_apache_nifi_processors: WARN
@@ -148,4 +221,5 @@ nifi_log_level_org_wali: WARN
 nifi_custom_log_levels: []
 
 # Extra Properties
-nifi_variable_registry_properties: [ "{{ nifi_conf_dir }}/extra-args.properties" ]
+nifi_variable_registry_properties: ["{{ nifi_conf_dir }}/extra-args.properties"]
+

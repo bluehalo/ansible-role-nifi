@@ -1,0 +1,96 @@
+---
+# https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#configuration-best-practices
+
+- name: "Get services facts"
+  service_facts:
+
+- name: "NiFi user"
+  block:
+    - name: create nifi group
+      group: name="{{ nifi_user }}"
+
+    - name: create nifi user
+      user:
+        name: "{{ nifi_user }}"
+        group: "{{ nifi_user }}"
+        shell: "{{ nifi_create_home_dir | ternary(nifi_default_shell, '/sbin/nologin') }}"
+        home: "{{ nifi_home_dir }}"
+        create_home: "{{ nifi_create_home_dir }}"
+  when: nifi_create_user
+  tags: [user]
+
+- name: "Install additional packets"
+  package:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ nifi_rh_packages }}"
+  when: (ansible_os_family == "RedHat")
+
+- name: "Disable swap"
+  block:
+    - name: "Swapoff"
+      shell: "swapoff -a"
+
+    - name: "Disable SWAP in fstab"
+      replace:
+        path: "/etc/fstab"
+        regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+        replace: '# \1'
+
+- name: "Stop Firewalld"
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: false
+  when:
+    - ansible_facts.services.get('firewalld.service')
+    - ansible_facts.services['firewalld.service'].state == 'running'
+
+- name: "Disable SeLinux"
+  block:
+    - name: "Disable SeLinux"
+      selinux:
+        state: disabled
+
+    - name: "Disable SeLinux in config"
+      lineinfile:
+        dest: "/etc/selinux/config"
+        regexp: "^SELINUX="
+        line: "SELINUX=disabled"
+
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_facts.selinux.status == 'enabled'
+
+- name: "Set fd and procs limits"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop: "{{ nifi_file_limits }}"
+
+- name: "Load kernel modules for Nifi"
+  block:
+    - name: "Load kernel modules for Nifi"
+      modprobe:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ nifi_kernel_modules }}"
+
+    - name: Create kernel modules-load file
+      template:
+        src: nifi-kern-modules.conf.j2
+        dest: /etc/modules-load.d/nifi.conf
+      notify:
+          - Reboot machine
+
+- name: "Modify sysctl entries for NiFi"
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_set: yes
+    reload: yes
+    sysctl_file: "/etc/sysctl.d/nifi.conf"
+  loop: "{{ nifi_sysctl }}"
+  notify:
+      - Reboot machine

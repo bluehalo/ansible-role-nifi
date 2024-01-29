@@ -1,57 +1,112 @@
----
-- name: copy nifi configs
-  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
-  with_items:
-    - { src: "{{ nifi_major_version }}/nifi.properties.j2", dest: "{{ nifi_conf_dir }}/nifi.properties" }
-    - { src: 'extra-args.properties.j2', dest: "{{ nifi_conf_dir }}/extra-args.properties" }
-  # notify:
-    # - restart nifi
-  tags: [ deploy, prop, props ]
+
+- name: Checking for setting attributes when using ldap-provider
+  ansible.builtin.assert:
+    that:
+    - nifi_ldap.manager_dn
+    - nifi_ldap.users_search_bases
+    - nifi_ldap.groups_ou
+    - nifi_ldap.groups_cn
+    fail_msg: When ldap-provider is enabled, the parameters users_search_bases, groups_ou, groups_cn must be set
+    success_msg: Passed all assertions for using ldap-provider
+  when: nifi_security_user_login_identity_provider|lower == "ldap-provider"
+  delegate_to: localhost
+  run_once: true
+  tags: [nifi_ldap_asert]
 
 - name: copy nifi configs
-  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
-  with_items:
-    - { src: "{{ nifi_major_version }}/authorizers.xml.j2", dest: "{{ nifi_conf_dir }}/authorizers.xml" }
-    - { src: "{{ nifi_major_version }}/bootstrap.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap.conf" }
-    - { src: "{{ nifi_major_version }}/bootstrap-notification-services.xml.j2", dest: "{{ nifi_conf_dir }}/bootstrap-notification-services.xml" }
-    - { src: "{{ nifi_major_version }}/logback.xml.j2", dest: "{{ nifi_conf_dir }}/logback.xml" }
-    - { src: "{{ nifi_major_version }}/login-identity-providers.xml.j2", dest: "{{ nifi_conf_dir }}/login-identity-providers.xml" }
-    - { src: "{{ nifi_major_version }}/state-management.xml.j2", dest: "{{ nifi_conf_dir }}/state-management.xml" }
-    - { src: "{{ nifi_major_version }}/zookeeper.properties.j2", dest: "{{ nifi_conf_dir }}/zookeeper.properties" }
-  # notify:
-    # - restart nifi
-  tags: [ config ]
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: "0644"
+    backup: "{{ nifi_backup_congif }}"
+  loop:
+  - {src: "{{ nifi_major_version }}/nifi.properties.j2", dest: "{{ nifi_conf_dir }}/nifi.properties"}
+  - {src: "extra-args.properties.j2", dest: "{{ nifi_conf_dir }}/extra-args.properties"}
+  notify:
+  - Restart nifi
+  tags: [deploy, prop, props]
+
+- name: copy nifi configs
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: "0644"
+    backup: "{{ nifi_backup_congif }}"
+  loop:
+  - {src: "{{ nifi_major_version }}/authorizers.xml.j2", dest: "{{ nifi_conf_dir }}/authorizers.xml"}
+  - {src: "{{ nifi_major_version }}/bootstrap.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap.conf"}
+  - {src: "{{ nifi_major_version }}/bootstrap-notification-services.xml.j2", dest: "{{ nifi_conf_dir }}/bootstrap-notification-services.xml"}
+  - {src: "{{ nifi_major_version }}/logback.xml.j2", dest: "{{ nifi_conf_dir }}/logback.xml"}
+  - {src: "{{ nifi_major_version }}/login-identity-providers.xml.j2", dest: "{{ nifi_conf_dir }}/login-identity-providers.xml"}
+  - {src: "{{ nifi_major_version }}/state-management.xml.j2", dest: "{{ nifi_conf_dir }}/state-management.xml"}
+  - {src: "{{ nifi_major_version }}/zookeeper.properties.j2", dest: "{{ nifi_conf_dir }}/zookeeper.properties"}
+  notify:
+  - Restart nifi
+  tags: [config]
 
 - name: copy bootstrap provider configs
-  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
-  with_items:
-  - { src: "{{ nifi_major_version }}/bootstrap-aws.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-aws.conf" }
-  - { src: "{{ nifi_major_version }}/bootstrap-azure.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-azure.conf" }
-  - { src: "{{ nifi_major_version }}/bootstrap-gcp.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-gcp.conf" }
-  - { src: "{{ nifi_major_version }}/bootstrap-hashicorp-vault.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-hashicorp-vault.conf" }
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: '0644'
+    backup: "{{ nifi_backup_congif }}"
+  loop:
+  - {src: "{{ nifi_major_version }}/bootstrap-aws.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-aws.conf"}
+  - {src: "{{ nifi_major_version }}/bootstrap-azure.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-azure.conf"}
+  - {src: "{{ nifi_major_version }}/bootstrap-gcp.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-gcp.conf"}
+  - {src: "{{ nifi_major_version }}/bootstrap-hashicorp-vault.conf.j2", dest: "{{ nifi_conf_dir }}/bootstrap-hashicorp-vault.conf"}
   notify:
-    - restart nifi
-  tags: [ stateless, config ]
+  - Restart nifi
+  tags: [stateless, config]
 
 - name: copy stateless nifi configs
-  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0644'
-  with_items:
-    - { src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties" }
-    - { src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml" }
-#  notify:
-#    - restart nifi
-  tags: [ stateless, config ]
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: "0644"
+    backup: "{{ nifi_backup_congif }}"
+  loop:
+  - {src: "{{ nifi_major_version }}/stateless.properties.j2", dest: "{{ nifi_conf_dir }}/stateless.properties"}
+  - {src: "{{ nifi_major_version }}/stateless-logback.xml.j2", dest: "{{ nifi_conf_dir }}/stateless-logback.xml"}
+  notify:
+  - Restart nifi
+  tags: [stateless, config]
 
 - name: copy nifi scripts
-  template: src="{{ item.src }}" dest="{{ item.dest }}" owner="{{ nifi_user }}" group="{{ nifi_user }}" mode='0755'
-  with_items:
-    - { src: "{{ nifi_major_version }}/nifi.sh.j2", dest: "{{ nifi_home }}/bin/nifi.sh" }
-    - { src: "{{ nifi_major_version }}/nifi-env.sh.j2", dest: "{{ nifi_home }}/bin/nifi-env.sh" }
-  tags: [ scripts ]
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ nifi_user }}"
+    group: "{{ nifi_user }}"
+    mode: "0755"
+    backup: "{{ nifi_backup_congif }}"
+  loop:
+  - {src: "{{ nifi_major_version }}/nifi.sh.j2", dest: "{{ nifi_home }}/bin/nifi.sh"}
+  - {src: "{{ nifi_major_version }}/nifi-env.sh.j2", dest: "{{ nifi_home }}/bin/nifi-env.sh"}
+  tags: [scripts]
 
 - name: Ensure NiFi service starts on reboot
-  service: name=nifi enabled=yes
+  service:
+    name: nifi
+    enabled: yes
 
-# - name: Ensure NiFi is restarted
-#   service: name=nifi state=restarted
-#   when: nifi_force_restart
+- name: NiFi is restarted
+  service:
+    name: nifi
+    state: restarted
+  when: ('restart_nifi' in ansible_run_tags) and (nifi_perform_restart|bool == true)
+  tags: [restart_nifi]
+
+- name: "Nifi service"
+  service:
+    name: nifi
+    state: started
+    enabled: yes

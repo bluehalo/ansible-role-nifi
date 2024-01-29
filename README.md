@@ -1,22 +1,48 @@
 nifi
 ====
 
-Use this role to configure Apache NiFi.
-Role has been tested with NiFi versions 1.3.x, 1.4.x, 1.5.x, 1.6.x, 1.7.x, and 1.8.x.
-
-Requirements
+TLS
 ------------
+```
+./bin/tls-toolkit.sh standalone \
+-n <hostname> \
+--subjectAlternativeNames <ip> \
+-P {{ nifi_security_truststorePasswd }}\
+-S {{ nifi_security_keystorePasswd }}\
+-f {{ nifi_conf_dir }}/nifi.properties
+```
+
+And store `truststore.jks` and `keystore.jks` in `{{ nifi_conf_dir }}` on NiFi Node
 
 Prior to executing this role, the NiFi distribution must be accssible on the target system at
 ```{{ nifi_base_dir }}/nifi-{{ nifi_version }}/```
-  - if RPM, the RPM must be installed
-  - if tar.gz, it must be unarchived
+  if tar.gz, it must be unarchived
+
+Or specify these vars:
+  `nifi_need_download: True`
+  `nifi_repo: "<URL_for archive download>"`
+
+Dependencies
+------------
+
+NiFi requires java, see `nifi_rh_packages` variable and do not forget change `nifi_java_home`, if required.
+
+Also, see variables in OS settings section. There are OS config changes, recommended by [documentation](https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#configuration-best-practices).
+
+
+Restart:
+
+`ansible-playbook ansible/playbooks/nifi_node.yaml --limit 'nifi_nodes_group' -t restart_nifi`
+
+Configure nodes:
+
+`ansible-playbook ansible/playbooks/nifi_node.yaml --limit 'nifi_nodes_group' -t configure_nifi`
 
 Role Variables
 --------------
 
-### Required Variables
-    nifi_version
+Currently *only* nifi_version 1.18.х supported
+To add another version - create directory in `templates/` with config's templates.
 
 ### Variables that determine the nifi install location, and their default values:
 
@@ -44,8 +70,6 @@ Role Variables
     # whether to restart nifi after making changes; default is True, for a cluster you may wish to disable
     nifi_perform_restart: True
 
-    # whether to force a restart, useful if another role has made changes (such as updating a custom nar); default is False
-    nifi_force_restart: False
 
     # A complete list of IP addresses for each nodes within the nifi cluster
     nifi_authorized_nodes_list: []
@@ -146,40 +170,26 @@ Role Variables
     nifi_log_level_org_wali: WARN
     nifi_custom_log_levels: []
 
-Dependencies
-------------
+    # LDAP NiFI properties examples
+    nifi_ldap:
+      identity_strategy: USE_USERNAME
+      url: ldaps://ldap.ru
+      auth_strategy: LDAPS
+      manager_dn: CN=service.nifi,OU=Services,DC=corp,DC=ru
+      manager_password: changeit
+      ldap_username_in_lower_case: true
+      ldap_group_in_lower_case: true
+      users_search_bases:
+        - ou=Admins,dc=corp,dc=ru
+        - ou=Branches,dc=corp,dc=ru
+        - ou=Services,ou=TDP,dc=corp,dc=ru
+        - ou=Partners,dc=corp,dc=ru
+      groups_ou: ou=Access,ou=Groups,ou=TDP,dc=corp,dc=ru
+      groups_cn:
+        - SYS NiFi Admins
+        - SYS NiFi Developers
+        - SYS NiFi Users
 
-NiFi requires java
-
-Example Playbook
-----------------
-
-Install and configure NiFi
-
-    - name: Install NiFi
-      hosts: servers
-      vars: 
-          nifi_log_level_root: WARN
-          nifi_node_jvm_memory: '10240M'
-          nifi_custom_nars: [ '/opt/extra-nars' ]
-          nifi_single_node: False
-          nifi_authorized_nodes_list: ['nifi-node-1', 'nifi-node-2']      
-      pre_tasks:
-        - name: Upload NiFi distribution (tar.gz) from localhost
-          copy:
-            src: nifi-1.8.0-bin.tar.gz
-            dest: /opt/nifi
-        - name: Unarchive NiFi distribution
-          unarchive:
-            src: /opt/nifi/nifi-1.8.0-bin.tar.gz
-            dest: /opt/nifi
-            copy: no
-      roles:
-        - role: nifi
-          nifi_version: 1.8.0
-
-License
--------
-
-MIT
+    # Backup configs before replece them by template
+    nifi_backup_congif: true
 

@@ -1,0 +1,6 @@
+# Maximum File Handles
+*  hard  nofile  {{ nifi_open_file_limit }}
+*  soft  nofile  {{ nifi_open_file_limit }}
+# Maximum Forked Processes
+*  hard  nproc  10000
+*  soft  nproc  10000

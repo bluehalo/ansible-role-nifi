@@ -1,0 +1,43 @@
+
+
+- block:
+    - name: Download nifi binary to local folder
+      become: false
+      get_url:
+        url: "{{ nifi_repo }}"
+        dest: "/tmp/nifi-{{ nifi_version }}-bin.zip"
+      register: _download_binary
+      until: _download_binary is succeeded
+      retries: 5
+      delay: 2
+    #  delegate_to: localhost
+      check_mode: false
+
+    - name: Unpack nifi binary
+      become: false
+      unarchive:
+        src: "/tmp/nifi-{{ nifi_version }}-bin.zip"
+        dest: "/tmp"
+        creates: "/tmp/nifi-{{ nifi_major_version }}/nifi"
+        remote_src: "yes"
+    #  delegate_to: localhost
+      check_mode: false
+
+    - name: Create nifi dir
+      file:
+        dest: "{{ nifi_base_dir }}"
+        mode: 0755
+        owner: nifi
+        group: nifi
+        state: directory
+
+    - name: Propagate nifi files
+      copy:
+        src: "/tmp/nifi-{{ nifi_version }}"
+        dest: "{{ nifi_base_dir }}"
+        mode: 0755
+        owner: nifi
+        group: nifi
+        remote_src: "yes"
+      when: not ansible_check_mode
+  when: nifi_need_download | default(false) | bool
